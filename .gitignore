@@ -1,0 +1,8 @@
+input/
+data/
+predict/
+.venv/
+.vscode/
+.ipynb_checkpoints/
+src/*bin
+src/*csv
