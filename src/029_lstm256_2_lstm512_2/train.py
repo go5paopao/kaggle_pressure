@@ -225,7 +225,7 @@ class RNNModel(nn.Module):
         seq_hidden = self.seq_linear(seq_input)  # (batchsize, seq_len, 32)
 
         hidden, (h_n, c_n) = self.encoder_rnn1(seq_hidden)
-        hidden, (h_n, c_n) = self.encoder_rnn2(seq_hidden)
+        hidden, (h_n, c_n) = self.encoder_rnn2(hidden)
 
         pred = self.decoder_out(hidden)
 
