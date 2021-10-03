@@ -4,5 +4,5 @@ predict/
 .venv/
 .vscode/
 .ipynb_checkpoints/
-src/*bin
-src/*csv
+src/*/*bin
+src/*/*csv

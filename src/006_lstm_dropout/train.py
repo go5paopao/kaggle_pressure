@@ -1,8 +1,8 @@
 import os
 import random
 import time
+from logging import INFO, FileHandler, Formatter, StreamHandler, getLogger
 from pathlib import Path
-from pprint import pprint
 
 import numpy as np
 import pandas as pd
@@ -17,10 +17,22 @@ from torch.utils.data.dataset import Dataset
 
 USE_TPU = False
 EXP_DIR = Path("./")
-if 'KAGGLE_URL_BASE' in set(os.environ.keys()):
+if "KAGGLE_URL_BASE" in set(os.environ.keys()):
     INPUT_DIR = Path("../input")
 else:
     INPUT_DIR = Path("../../input")
+
+
+def init_logger(log_file: Path = "./train.log"):
+    logger = getLogger(__name__)
+    logger.setLevel(INFO)
+    handler1 = StreamHandler()
+    handler1.setFormatter(Formatter("%(message)s"))
+    handler2 = FileHandler(filename=log_file)
+    handler2.setFormatter(Formatter("%(asctime)s %(message)s"))
+    logger.addHandler(handler1)
+    logger.addHandler(handler2)
+    return logger
 
 
 def set_seed(seed):
@@ -50,11 +62,11 @@ def make_feature(train_df, test_df):
             df.groupby("breath_id")["u_in"].diff()
             / df.groupby("breath_id")["time_step"].diff()
         ).fillna(0)
-
+        df["u_in_diff_diff"] = df.groupby("breath_id")["u_in_diff"].diff().fillna(0)
         df["area"] = df["time_step"] * df["u_in"]
         df["area"] = df.groupby("breath_id")["area"].cumsum()
-        df["u_in_lag2"] = df.groupby("breath_id")["u_in"].shift(2).fillna(0)
-
+        df['cross'] = df['u_in'] * df['u_out']
+        df['cross2'] = df['time_step'] * df['u_out']
         return df
 
     train_df = _make_feature_per_dataset(train_df)
@@ -71,12 +83,10 @@ def normalize_feature(train_df, valid_df, test_df):
         "time_step",
         "time_from_u_out_change",
         "u_in_diff",
-        # "u_in_at_out1",
-        # "u_in_at_out0",
-        # "u_in_at_out1_cumsum",
-        # "u_in_at_out0_cumsum",
+        "u_in_diff_diff",
         "area",
-        "u_in_lag2",
+        "cross",
+        "cross2"
     ]
 
     scaler = StandardScaler()
@@ -175,11 +185,12 @@ class RNNModel(nn.Module):
         self.c_emb = nn.Embedding(3, 8)
 
         self.encoder_rnn = nn.LSTM(
-            num_layers=6,
+            num_layers=4,
             input_size=n_hidden,
             hidden_size=n_hidden,
             batch_first=True,
             bidirectional=True,
+            dropout=0.2
         )
 
         self.decoder_rnn_cell = nn.LSTMCell(
@@ -245,14 +256,11 @@ def train_one_epoch(
             targets = targets.view(-1)
 
             loss = loss_fn(preds, targets)
-            print(f"\rTrain: {iter_i*config.batch_size} / {epoch_data_num}", end="")
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item()
 
     epoch_loss_per_data = epoch_loss / epoch_data_num
-    print("\r", end="")
-    print("\r                         ")
     return epoch_loss_per_data
 
 
@@ -273,7 +281,6 @@ def valid_one_epoch(model, loss_fn, data_loader, config, device):
             preds = model(features)
             preds = preds.view(-1)
             targets = targets.view(-1)
-            print(f"\rVal: {iter_i*config.batch_size} / {epoch_data_num}", end="")
 
         pred_list.append(preds.detach().cpu().numpy())
         target_list.append(targets.detach().cpu().numpy())
@@ -281,8 +288,6 @@ def valid_one_epoch(model, loss_fn, data_loader, config, device):
     epoch_loss_per_data = epoch_loss / epoch_data_num
     val_preds = np.concatenate(pred_list, axis=0)
     val_targets = np.concatenate(target_list, axis=0)
-    print("\r", end="")
-    print("\r                         ")
     return epoch_loss_per_data, val_preds, val_targets
 
 
@@ -294,12 +299,14 @@ def train_run(
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    print(f"train run device : {device}")
+    logger.info(f"train run device : {device}")
 
     ###################################
     # Model
     ###################################
-    model = RNNModel(seq_features=config.seq_features, device=device)
+    model = RNNModel(
+        seq_features=config.seq_features, n_hidden=config.n_hidden, device=device
+    )
     model.to(device)
 
     ###################################
@@ -396,8 +403,7 @@ def train_run(
 
         results_list.append(results)
 
-        print("\r", end="")
-        pprint(results)
+        logger.info(results)
 
         if val_score < best_val_score:
             best_val_score = val_score
@@ -448,7 +454,9 @@ def test_predict(test_df, model_path, config):
     ###################################
     # Model
     ###################################
-    model = RNNModel(seq_features=config.seq_features, device=device)
+    model = RNNModel(
+        seq_features=config.seq_features, n_hidden=config.n_hidden, device=device
+    )
     model.to(device)
 
     model.load_state_dict(
@@ -477,7 +485,6 @@ def test_predict(test_df, model_path, config):
     ###################################
 
     pred_list = []
-    epoch_data_num = len(test_loader.dataset)
 
     model.eval()
     for iter_i, features in enumerate(test_loader):
@@ -487,7 +494,6 @@ def test_predict(test_df, model_path, config):
         with torch.no_grad():
             preds = model(features)
             preds = preds.view(-1)
-            print(f"\rTest: {iter_i*config.batch_size} / {epoch_data_num}", end="")
 
         pred_list.append(preds.detach().cpu().numpy())
 
@@ -500,28 +506,32 @@ class Config:
 
     num_workers = 4
     batch_size = 128
-    n_epoch = 300
+    n_epoch = 200
     lr = 5e-3
 
     SchedulerClass = CosineAnnealingLR
-    scheduler_params = dict(T_max=300, eta_min=1e-5)
+    scheduler_params = dict(T_max=200, eta_min=1e-5)
     n_cv_fold = 5
     use_fp16 = False
 
+    n_hidden = 128
     seq_features = [
         "u_in",
         "u_out",
         "time_from_u_out_change",
         "u_in_cumsum",
         "u_in_diff",
+        "u_in_diff_diff",
         "area",
-        "u_in_lag2",
+        "cross",
+        "cross2"
+        # "u_in_lag2",
     ]
 
 
 def run():
-    train_df = pd.read_csv("../input/ventilator-pressure-prediction/train.csv")
-    test_df = pd.read_csv("../input/ventilator-pressure-prediction/test.csv")
+    train_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/train.csv")
+    test_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/test.csv")
 
     config = Config()
 
@@ -532,10 +542,11 @@ def run():
     train_df, test_df = make_feature(train_df, test_df)
 
     model_num = 0
+    val_scores = []
     for fold_ix, (trn_idx, val_idx) in enumerate(
         folds.split(train_df, groups=train_df["breath_id"])
     ):
-        print(f"Fold {fold_ix}")
+        logger.info(f"Fold {fold_ix}")
 
         _train_df = train_df.iloc[trn_idx].reset_index(drop=True)
         _valid_df = train_df.iloc[val_idx].reset_index(drop=True)
@@ -554,21 +565,24 @@ def run():
         )
         model_num += 1
 
-        oof_preds[val_idx] = test_predict(_valid_df, best_model_path)
+        val_scores.append(best_val_score)
+        oof_preds[val_idx] = test_predict(_valid_df, best_model_path, config)
         test_preds += test_predict(_test_df, best_model_path, config)
 
         if fold_ix >= 0:
             break
 
     test_preds = test_preds / model_num
-
+    val_score = np.mean(val_scores)
     sub_df = pd.read_csv(
         INPUT_DIR / "ventilator-pressure-prediction/sample_submission.csv"
     )
     sub_df["pressure"] = test_preds
 
-    sub_df.to_csv("submission.csv", index=False)
+    sub_df.to_csv(f"submission_{val_score:.5f}.csv", index=False)
 
+
+logger = init_logger(EXP_DIR / "run.log")
 
 if __name__ == "__main__":
     run()
