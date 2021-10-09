@@ -237,14 +237,15 @@ class CustomLoss(nn.Module):
     Directly optimizes the competition metric
     https://www.kaggle.com/theoviel/deep-learning-starter-simple-lstm
     """
-    def __init__(self, max_epoch=100):
+    def __init__(self, max_epoch=100, base_loss=nn.L1Loss):
         self.max_epoch = max_epoch
+        self.base_loss = base_loss()
 
     def __call__(self, preds, y, u_out, epoch):
         w = (1 - u_out)
         u_out_mae = w * (y - preds).abs()
         u_out_mae = u_out_mae.sum(-1) / (w.sum(-1))
-        normal_mae = nn.L1Loss()(preds, y)
+        normal_mae = self.base_loss(preds, y)
         epoch_w = min(epoch / self.max_epoch, 1.0)
         loss = u_out_mae * epoch_w + normal_mae * (1 - epoch_w)
         return loss
@@ -259,7 +260,7 @@ class MultitaskLoss(nn.Module):
         super(MultitaskLoss, self).__init__()
         self.p_weight = pressure_weight
         self.pressure_loss = CustomLoss()
-        self.pressure_diff_loss = CustomLoss()
+        self.pressure_diff_loss = CustomLoss(base_loss=nn.MSELoss)
 
     def __call__(self, preds, y, preds_diff, y_diff, u_out, epoch):
         p_loss = self.pressure_loss(preds, y, u_out, epoch)
@@ -560,7 +561,7 @@ class Config:
     n_cv_fold = 5
     use_fp16 = False
 
-    pressure_loss_weight = 0.7
+    pressure_loss_weight = 0.75
 
     n_hidden = 512
     seq_features = [
