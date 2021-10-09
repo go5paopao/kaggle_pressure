@@ -67,8 +67,10 @@ def make_feature(train_df, test_df):
         df["u_in_diff_diff"] = df.groupby("breath_id")["u_in_diff"].diff().fillna(0)
         df["area"] = df["time_step"] * df["u_in"]
         df["area"] = df.groupby("breath_id")["area"].cumsum()
-        df['cross'] = df['u_in'] * df['u_out']
         df['cross2'] = df['time_step'] * df['u_out']
+        df["u_in_shift1"] = df.groupby("breath_id")["u_in"].shift(1).fillna(0)
+        df["u_in_shift2"] = df.groupby("breath_id")["u_in"].shift(2).fillna(0)
+
         return df
 
     train_df = _make_feature_per_dataset(train_df)
@@ -88,8 +90,10 @@ def normalize_feature(train_df, valid_df, test_df):
         "u_in_diff2",
         "u_in_diff_diff",
         "area",
-        "cross",
-        "cross2"
+        # "cross",
+        "cross2",
+        "u_in_shift1",
+        "u_in_shift2"
     ]
 
     scaler = StandardScaler()
@@ -174,46 +178,19 @@ class RNNModel(nn.Module):
             nn.Linear(self.seq_feature_len + 8 * 2, n_hidden),
             nn.LayerNorm(n_hidden),
             nn.ReLU(),
+            # nn.Linear(n_hidden*2, n_hidden),
+            # nn.ReLU()
         )
 
         self.r_emb = nn.Embedding(3, 8)
         self.c_emb = nn.Embedding(3, 8)
 
-        self.encoder_rnn1 = nn.LSTM(
-            num_layers=1,
+        self.encoder_rnn = nn.LSTM(
+            num_layers=4,
             input_size=n_hidden,
             hidden_size=n_hidden,
             batch_first=True,
             bidirectional=True,
-        )
-        self.encoder_rnn2 = nn.LSTM(
-            num_layers=1,
-            input_size=n_hidden*2,
-            hidden_size=n_hidden,
-            batch_first=True,
-            bidirectional=True,
-        )
-        self.encoder_rnn3 = nn.LSTM(
-            num_layers=1,
-            input_size=n_hidden*2,
-            hidden_size=n_hidden,
-            batch_first=True,
-            bidirectional=True,
-        )
-        self.encoder_rnn4 = nn.LSTM(
-            num_layers=1,
-            input_size=n_hidden*2,
-            hidden_size=n_hidden,
-            batch_first=True,
-            bidirectional=True,
-        )
-        self.rnn_dropout2 = nn.Dropout(p=0.1)
-        self.rnn_dropout3 = nn.Dropout(p=0.2)
-        self.rnn_dropout4 = nn.Dropout(p=0.3)
-
-        self.decoder_rnn_cell = nn.LSTMCell(
-            input_size=n_hidden,
-            hidden_size=n_hidden,
         )
         # self.decoder_out = nn.Linear(n_hidden*2 + 8*2, 1)  # lstm_hidden + id_embedding
         self.decoder_out = nn.Sequential(
@@ -244,14 +221,7 @@ class RNNModel(nn.Module):
 
         seq_hidden = self.seq_linear(seq_input)  # (batchsize, seq_len, 32)
 
-        hidden, (h_n, c_n) = self.encoder_rnn1(seq_hidden)
-        hidden, (h_n, c_n) = self.encoder_rnn2(hidden)
-        hidden = self.rnn_dropout2(hidden)
-        hidden, (h_n, c_n) = self.encoder_rnn3(hidden)
-        hidden = self.rnn_dropout3(hidden)
-        hidden, (h_n, c_n) = self.encoder_rnn4(hidden)
-        hidden = self.rnn_dropout4(hidden)
-
+        hidden, (h_n, c_n) = self.encoder_rnn(seq_hidden)
         pred = self.decoder_out(hidden)
 
         return pred
@@ -570,8 +540,9 @@ class Config:
         "u_in_diff2",
         "u_in_diff_diff",
         "area",
-        # "cross",
-        "cross2"
+        "cross2",
+        "u_in_shift1",
+        "u_in_shift2"
     ]
     train_folds = [0]
 

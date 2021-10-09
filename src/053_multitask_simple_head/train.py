@@ -65,10 +65,11 @@ def make_feature(train_df, test_df):
         ).fillna(0)
         df["u_in_diff2"] = df.groupby("breath_id")["u_in_diff"].shift(1).fillna(0)
         df["u_in_diff_diff"] = df.groupby("breath_id")["u_in_diff"].diff().fillna(0)
-        df["area"] = df["time_step"] * df["u_in"]
+        df["area"] = df["u_in"] * df["time_step"]
         df["area"] = df.groupby("breath_id")["area"].cumsum()
-        df['cross'] = df['u_in'] * df['u_out']
         df['cross2'] = df['time_step'] * df['u_out']
+
+        df["u_in_sqrt"] = np.sqrt(df["u_in"] / 100)
         return df
 
     train_df = _make_feature_per_dataset(train_df)
@@ -80,16 +81,15 @@ def make_feature(train_df, test_df):
 def normalize_feature(train_df, valid_df, test_df):
 
     cols = [
+        "time_from_u_out_change",
         "u_in",
         "u_in_cumsum_per_time",
-        "time_step",
-        "time_from_u_out_change",
         "u_in_diff",
         "u_in_diff2",
         "u_in_diff_diff",
         "area",
-        "cross",
-        "cross2"
+        "cross2",
+        "u_in_sqrt"
     ]
 
     scaler = StandardScaler()
@@ -153,7 +153,9 @@ class PressureDataset(Dataset):
 
         if self.is_train:
             target = torch.tensor(self.target_arr_dict[breath_id], dtype=torch.float)
-            return features, target
+            target_diff = torch.zeros(target.shape, dtype=torch.float)
+            target_diff[1:] = target[1:] - target[0:-1]
+            return features, target, target_diff
         else:
             return features
 
@@ -174,53 +176,26 @@ class RNNModel(nn.Module):
             nn.Linear(self.seq_feature_len + 8 * 2, n_hidden),
             nn.LayerNorm(n_hidden),
             nn.ReLU(),
+            # nn.Linear(n_hidden*2, n_hidden),
+            # nn.ReLU()
         )
 
         self.r_emb = nn.Embedding(3, 8)
         self.c_emb = nn.Embedding(3, 8)
 
-        self.encoder_rnn1 = nn.LSTM(
-            num_layers=1,
+        self.encoder_rnn = nn.LSTM(
+            num_layers=4,
             input_size=n_hidden,
             hidden_size=n_hidden,
             batch_first=True,
             bidirectional=True,
-        )
-        self.encoder_rnn2 = nn.LSTM(
-            num_layers=1,
-            input_size=n_hidden*2,
-            hidden_size=n_hidden,
-            batch_first=True,
-            bidirectional=True,
-        )
-        self.encoder_rnn3 = nn.LSTM(
-            num_layers=1,
-            input_size=n_hidden*2,
-            hidden_size=n_hidden,
-            batch_first=True,
-            bidirectional=True,
-        )
-        self.encoder_rnn4 = nn.LSTM(
-            num_layers=1,
-            input_size=n_hidden*2,
-            hidden_size=n_hidden,
-            batch_first=True,
-            bidirectional=True,
-        )
-        self.rnn_dropout2 = nn.Dropout(p=0.1)
-        self.rnn_dropout3 = nn.Dropout(p=0.2)
-        self.rnn_dropout4 = nn.Dropout(p=0.3)
-
-        self.decoder_rnn_cell = nn.LSTMCell(
-            input_size=n_hidden,
-            hidden_size=n_hidden,
         )
         # self.decoder_out = nn.Linear(n_hidden*2 + 8*2, 1)  # lstm_hidden + id_embedding
         self.decoder_out = nn.Sequential(
             nn.Linear(n_hidden * 2, n_hidden),
-            nn.LayerNorm(n_hidden),
+            # nn.LayerNorm(n_hidden),
             nn.ReLU(),
-            nn.Linear(n_hidden, 1),
+            nn.Linear(n_hidden, 2),
         )
 
     def __call__(self, features):
@@ -244,16 +219,10 @@ class RNNModel(nn.Module):
 
         seq_hidden = self.seq_linear(seq_input)  # (batchsize, seq_len, 32)
 
-        hidden, (h_n, c_n) = self.encoder_rnn1(seq_hidden)
-        hidden, (h_n, c_n) = self.encoder_rnn2(hidden)
-        hidden = self.rnn_dropout2(hidden)
-        hidden, (h_n, c_n) = self.encoder_rnn3(hidden)
-        hidden = self.rnn_dropout3(hidden)
-        hidden, (h_n, c_n) = self.encoder_rnn4(hidden)
-        hidden = self.rnn_dropout4(hidden)
-
+        hidden, (h_n, c_n) = self.encoder_rnn(seq_hidden)
         pred = self.decoder_out(hidden)
-
+        # diff_pred = self.decoder_diff_out(hidden)
+        # pred = torch.cat([pred, diff_pred], dim=-1)
         return pred
 
 
@@ -275,6 +244,25 @@ class CustomLoss(nn.Module):
         return loss
 
 
+class MultitaskLoss(nn.Module):
+    """
+    Directly optimizes the competition metric
+    https://www.kaggle.com/theoviel/deep-learning-starter-simple-lstm
+    """
+    def __init__(self, pressure_weight=0.9):
+        super(MultitaskLoss, self).__init__()
+        self.p_weight = pressure_weight
+        self.pressure_loss = CustomLoss()
+        self.pressure_diff_loss = CustomLoss()
+
+    def __call__(self, preds, y, preds_diff, y_diff, u_out, epoch):
+        p_loss = self.pressure_loss(preds, y, u_out, epoch)
+        p_diff_loss = self.pressure_diff_loss(preds_diff, y_diff, u_out, epoch)
+
+        total_loss = p_loss * (self.p_weight) + p_diff_loss * (1 - self.p_weight)
+        return total_loss
+
+
 def train_one_epoch(
     model, loss_fn, data_loader, optimizer, config, device, epoch=0, scaler=None
 ):
@@ -284,10 +272,11 @@ def train_one_epoch(
 
     model.train()
 
-    for iter_i, (features, targets) in enumerate(data_loader):
+    for iter_i, (features, targets, targets_diff) in enumerate(data_loader):
         # input
         features = {k: v.to(device) for k, v in features.items()}
         targets = targets.to(device)
+        targets_diff = targets_diff.to(device)
         u_out = features["u_out"].to(device).view(-1)
 
         # zero grad
@@ -296,10 +285,14 @@ def train_one_epoch(
         with torch.set_grad_enabled(True):
             preds = model(features)
 
-            preds = preds.view(-1)
+            p_preds = preds[:, :, 0].view(-1)
+            p_diff_preds = preds[:, :, 1].view(-1)
             targets = targets.view(-1)
+            targets_diff = targets_diff.view(-1)
 
-            loss = loss_fn(preds, targets, u_out, epoch)
+            loss = loss_fn(
+                p_preds, targets, p_diff_preds, targets_diff, u_out, epoch
+            )
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item()
@@ -316,14 +309,14 @@ def valid_one_epoch(model, loss_fn, data_loader, config, device):
     target_list = []
 
     model.eval()
-    for iter_i, (features, targets) in enumerate(data_loader):
+    for iter_i, (features, targets, targets_diff) in enumerate(data_loader):
         # input
         features = {k: v.to(device) for k, v in features.items()}
         targets = targets.to(device)
 
         with torch.no_grad():
             preds = model(features)
-            preds = preds.view(-1)
+            preds = preds[:, :, 0].view(-1)
             targets = targets.view(-1)
 
         pred_list.append(preds.detach().cpu().numpy())
@@ -393,7 +386,8 @@ def train_run(
     # loss function
     ##################
     # loss_fn = nn.L1Loss()
-    loss_fn = CustomLoss()
+    # loss_fn = CustomLoss()
+    loss_fn = MultitaskLoss(config.pressure_loss_weight)
 
     ###############################
     # train epoch loop
@@ -539,7 +533,7 @@ def test_predict(test_df, model_path, config):
 
         with torch.no_grad():
             preds = model(features)
-            preds = preds.view(-1)
+            preds = preds[:, :, 0].view(-1)
 
         pred_list.append(preds.detach().cpu().numpy())
 
@@ -560,18 +554,20 @@ class Config:
     n_cv_fold = 5
     use_fp16 = False
 
+    pressure_loss_weight = 0.9
+
     n_hidden = 512
     seq_features = [
+        "time_from_u_out_change",
         "u_in",
         "u_out",
-        "time_from_u_out_change",
         "u_in_cumsum_per_time",
         "u_in_diff",
         "u_in_diff2",
         "u_in_diff_diff",
         "area",
-        # "cross",
-        "cross2"
+        "cross2",
+        "u_in_sqrt"
     ]
     train_folds = [0]
 

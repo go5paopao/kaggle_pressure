@@ -1,0 +1,245 @@
+9.6s 1 /opt/conda/lib/python3.7/site-packages/papermill/iorw.py:50: FutureWarning: pyarrow.HadoopFileSystem is deprecated as of 2.0.0, please use pyarrow.fs.HadoopFileSystem instead.
+9.6s 2 from pyarrow import HadoopFileSystem
+12.6s 3 Cloning into 'kaggle_pressure'...
+13.1s 4 Failed to add the host to the list of known hosts (/root/.ssh/known_hosts).
+13.7s 5 remote: Enumerating objects: 152, done.[K
+13.7s 6 remote: Counting objects:   0% (1/152)[Kremote: Counting objects:   1% (2/152)[Kremote: Counting objects:   2% (4/152)[Kremote: Counting objects:   3% (5/152)[Kremote: Counting objects:   4% (7/152)[Kremote: Counting objects:   5% (8/152)[Kremote: Counting objects:   6% (10/152)[Kremote: Counting objects:   7% (11/152)[Kremote: Counting objects:   8% (13/152)[Kremote: Counting objects:   9% (14/152)[Kremote: Counting objects:  10% (16/152)[Kremote: Counting objects:  11% (17/152)[Kremote: Counting objects:  12% (19/152)[Kremote: Counting objects:  13% (20/152)[Kremote: Counting objects:  14% (22/152)[Kremote: Counting objects:  15% (23/152)[Kremote: Counting objects:  16% (25/152)[Kremote: Counting objects:  17% (26/152)[Kremote: Counting objects:  18% (28/152)[Kremote: Counting objects:  19% (29/152)[Kremote: Counting objects:  20% (31/152)[Kremote: Counting objects:  21% (32/152)[Kremote: Counting objects:  22% (34/152)[Kremote: Counting objects:  23% (35/152)[Kremote: Counting objects:  24% (37/152)[Kremote: Counting objects:  25% (38/152)[Kremote: Counting objects:  26% (40/152)[Kremote: Counting objects:  27% (42/152)[Kremote: Counting objects:  28% (43/152)[Kremote: Counting objects:  29% (45/152)[Kremote: Counting objects:  30% (46/152)[Kremote: Counting objects:  31% (48/152)[Kremote: Counting objects:  32% (49/152)[Kremote: Counting objects:  33% (51/152)[Kremote: Counting objects:  34% (52/152)[Kremote: Counting objects:  35% (54/152)[Kremote: Counting objects:  36% (55/152)[Kremote: Counting objects:  37% (57/152)[Kremote: Counting objects:  38% (58/152)[Kremote: Counting objects:  39% (60/152)[Kremote: Counting objects:  40% (61/152)[Kremote: Counting objects:  41% (63/152)[Kremote: Counting objects:  42% (64/152)[Kremote: Counting objects:  43% (66/152)[Kremote: Counting objects:  44% (67/152)[Kremote: Counting objects:  45% (69/152)[Kremote: Counting objects:  46% (70/152)[Kremote: Counting objects:  47% (72/152)[Kremote: Counting objects:  48% (73/152)[Kremote: Counting objects:  49% (75/152)[Kremote: Counting objects:  50% (76/152)[Kremote: Counting objects:  51% (78/152)[Kremote: Counting objects:  52% (80/152)[Kremote: Counting objects:  53% (81/152)[Kremote: Counting objects:  54% (83/152)[Kremote: Counting objects:  55% (84/152)[Kremote: Counting objects:  56% (86/152)[Kremote: Counting objects:  57% (87/152)[Kremote: Counting objects:  58% (89/152)[Kremote: Counting objects:  59% (90/152)[Kremote: Counting objects:  60% (92/152)[Kremote: Counting objects:  61% (93/152)[Kremote: Counting objects:  62% (95/152)[Kremote: Counting objects:  63% (96/152)[Kremote: Counting objects:  64% (98/152)[Kremote: Counting objects:  65% (99/152)[Kremote: Counting objects:  66% (101/152)[Kremote: Counting objects:  67% (102/152)[Kremote: Counting objects:  68% (104/152)[Kremote: Counting objects:  69% (105/152)[Kremote: Counting objects:  70% (107/152)[Kremote: Counting objects:  71% (108/152)[Kremote: Counting objects:  72% (110/152)[Kremote: Counting objects:  73% (111/152)[Kremote: Counting objects:  74% (113/152)[Kremote: Counting objects:  75% (114/152)[Kremote: Counting objects:  76% (116/152)[Kremote: Counting objects:  77% (118/152)[Kremote: Counting objects:  78% (119/152)[Kremote: Counting objects:  79% (121/152)[Kremote: Counting objects:  80% (122/152)[Kremote: Counting objects:  81% (124/152)[Kremote: Counting objects:  82% (125/152)[Kremote: Counting objects:  83% (127/152)[Kremote: Counting objects:  84% (128/152)[Kremote: Counting objects:  85% (130/152)[Kremote: Counting objects:  86% (131/152)[Kremote: Counting objects:  87% (133/152)[Kremote: Counting objects:  88% (134/152)[Kremote: Counting objects:  89% (136/152)[Kremote: Counting objects:  90% (137/152)[Kremote: Counting objects:  91% (139/152)[Kremote: Counting objects:  92% (140/152)[Kremote: Counting objects:  93% (142/152)[Kremote: Counting objects:  94% (143/152)[Kremote: Counting objects:  95% (145/152)[Kremote: Counting objects:  96% (146/152)[Kremote: Counting objects:  97% (148/152)[Kremote: Counting objects:  98% (149/152)[Kremote: Counting objects:  99% (151/152)[Kremote: Counting objects: 100% (152/152)[Kremote: Counting objects: 100% (152/152), done.[K
+13.8s 7 remote: Compressing objects:   0% (1/101)[Kremote: Compressing objects:   1% (2/101)[Kremote: Compressing objects:   2% (3/101)[Kremote: Compressing objects:   3% (4/101)[Kremote: Compressing objects:   4% (5/101)[Kremote: Compressing objects:   5% (6/101)[Kremote: Compressing objects:   6% (7/101)[Kremote: Compressing objects:   7% (8/101)[Kremote: Compressing objects:   8% (9/101)[Kremote: Compressing objects:   9% (10/101)[Kremote: Compressing objects:  10% (11/101)[Kremote: Compressing objects:  11% (12/101)[Kremote: Compressing objects:  12% (13/101)[Kremote: Compressing objects:  13% (14/101)[Kremote: Compressing objects:  14% (15/101)[Kremote: Compressing objects:  15% (16/101)[Kremote: Compressing objects:  16% (17/101)[Kremote: Compressing objects:  17% (18/101)[Kremote: Compressing objects:  18% (19/101)[Kremote: Compressing objects:  19% (20/101)[Kremote: Compressing objects:  20% (21/101)[Kremote: Compressing objects:  21% (22/101)[Kremote: Compressing objects:  22% (23/101)[Kremote: Compressing objects:  23% (24/101)[Kremote: Compressing objects:  24% (25/101)[Kremote: Compressing objects:  25% (26/101)[Kremote: Compressing objects:  26% (27/101)[Kremote: Compressing objects:  27% (28/101)[Kremote: Compressing objects:  28% (29/101)[Kremote: Compressing objects:  29% (30/101)[Kremote: Compressing objects:  30% (31/101)[Kremote: Compressing objects:  31% (32/101)[Kremote: Compressing objects:  32% (33/101)[Kremote: Compressing objects:  33% (34/101)[Kremote: Compressing objects:  34% (35/101)[Kremote: Compressing objects:  35% (36/101)[Kremote: Compressing objects:  36% (37/101)[Kremote: Compressing objects:  37% (38/101)[Kremote: Compressing objects:  38% (39/101)[Kremote: Compressing objects:  39% (40/101)[Kremote: Compressing objects:  40% (41/101)[Kremote: Compressing objects:  41% (42/101)[Kremote: Compressing objects:  42% (43/101)[Kremote: Compressing objects:  43% (44/101)[Kremote: Compressing objects:  44% (45/101)[Kremote: Compressing objects:  45% (46/101)[Kremote: Compressing objects:  46% (47/101)[Kremote: Compressing objects:  47% (48/101)[Kremote: Compressing objects:  48% (49/101)[Kremote: Compressing objects:  49% (50/101)[Kremote: Compressing objects:  50% (51/101)[Kremote: Compressing objects:  51% (52/101)[Kremote: Compressing objects:  52% (53/101)[Kremote: Compressing objects:  53% (54/101)[Kremote: Compressing objects:  54% (55/101)[Kremote: Compressing objects:  55% (56/101)remote: Compressing objects:  56% (57/101)[Kremote: Compressing objects:  57% (58/101)[Kremote: Compressing objects:  58% (59/101)[Kremote: Compressing objects:  59% (60/101)[Kremote: Compressing objects:  60% (61/101)[Kremote: Compressing objects:  61% (62/101)[Kremote: Compressing objects:  62% (63/101)[Kremote: Compressing objects:  63% (64/101)[Kremote: Compressing objects:  64% (65/101)[Kremote: Compressing objects:  65% (66/101)[Kremote: Compressing objects:  66% (67/101)[Kremote: Compressing objects:  67% (68/101)[Kremote: Compressing objects:  68% (69/101)[Kremote: Compressing objects:  69% (70/101)[Kremote: Compressing objects:  70% (71/101)[Kremote: Compressing objects:  71% (72/101)[Kremote: Compressing objects:  72% (73/101)[Kremote: Compressing objects:  73% (74/101)[Kremote: Compressing objects:  74% (75/101)[Kremote: Compressing objects:  75% (76/101)[Kremote: Compressing objects:  76% (77/101)[Kremote: Compressing objects:  77% (78/101)[Kremote: Compressing objects:  78% (79/101)[Kremote: Compressing objects:  79% (80/101)[Kremote: Compressing objects:  80% (81/101)[Kremote: Compressing objects:  81% (82/101)[Kremote: Compressing objects:  82% (83/101)[Kremote: Compressing objects:  83% (84/101)[Kremote: Compressing objects:  84% (85/101)[Kremote: Compressing objects:  85% (86/101)[Kremote: Compressing objects:  86% (87/101)[Kremote: Compressing objects:  87% (88/101)[Kremote: Compressing objects:  88% (89/101)[Kremote: Compressing objects:  89% (90/101)[Kremote: Compressing objects:  90% (91/101)[Kremote: Compressing objects:  91% (92/101)[Kremote: Compressing objects:  92% (93/101)[Kremote: Compressing objects:  93% (94/101)[Kremote: Compressing objects:  94% (95/101)[Kremote: Compressing objects:  95% (96/101)[Kremote: Compressing objects:  96% (97/101)[Kremote: Compressing objects:  97% (98/101)[Kremote: Compressing objects:  98% (99/101)[Kremote: Compressing objects:  99% (100/101)[Kremote: Compressing objects: 100% (101/101)[Kremote: Compressing objects: 100% (101/101), done.[K
+14.0s 8 Receiving objects:   0% (1/152)   Receiving objects:   1% (2/152)   Receiving objects:   2% (4/152)   Receiving objects:   3% (5/152)   Receiving objects:   4% (7/152)   Receiving objects:   5% (8/152)   Receiving objects:   6% (10/152)   Receiving objects:   7% (11/152)   Receiving objects:   8% (13/152)   Receiving objects:   9% (14/152)   Receiving objects:  10% (16/152)   Receiving objects:  11% (17/152)   Receiving objects:  12% (19/152)   Receiving objects:  13% (20/152)   Receiving objects:  14% (22/152)   Receiving objects:  15% (23/152)   Receiving objects:  16% (25/152)   Receiving objects:  17% (26/152)   Receiving objects:  18% (28/152)   Receiving objects:  19% (29/152)   Receiving objects:  20% (31/152)   Receiving objects:  21% (32/152)   Receiving objects:  22% (34/152)   Receiving objects:  23% (35/152)   Receiving objects:  24% (37/152)   Receiving objects:  25% (38/152)   Receiving objects:  26% (40/152)   Receiving objects:  27% (42/152)   Receiving objects:  28% (43/152)   Receiving objects:  29% (45/152)   Receiving objects:  30% (46/152)   Receiving objects:  31% (48/152)   Receiving objects:  32% (49/152)   Receiving objects:  33% (51/152)   Receiving objects:  34% (52/152)   Receiving objects:  35% (54/152)   Receiving objects:  36% (55/152)   Receiving objects:  37% (57/152)   Receiving objects:  38% (58/152)   Receiving objects:  39% (60/152)   Receiving objects:  40% (61/152)   Receiving objects:  41% (63/152)   Receiving objects:  42% (64/152)   Receiving objects:  43% (66/152)   Receiving objects:  44% (67/152)   Receiving objects:  45% (69/152)   Receiving objects:  46% (70/152)   Receiving objects:  47% (72/152)   Receiving objects:  48% (73/152)   Receiving objects:  49% (75/152)   Receiving objects:  50% (76/152)   Receiving objects:  51% (78/152)   Receiving objects:  52% (80/152)   Receiving objects:  53% (81/152)   Receiving objects:  54% (83/152)   Receiving objects:  55% (84/152)   Receiving objects:  56% (86/152)   Receiving objects:  57% (87/152)   Receiving objects:  58% (89/152)   Receiving objects:  59% (90/152)   Receiving objects:  60% (92/152)   Receiving objects:  61% (93/152)   Receiving objects:  62% (95/152)   Receiving objects:  63% (96/152)   Receiving objects:  64% (98/152)   Receiving objects:  65% (99/152)   Receiving objects:  66% (101/152)   Receiving objects:  67% (102/152)   Receiving objects:  68% (104/152)   Receiving objects:  69% (105/152)   Receiving objects:  70% (107/152)   Receiving objects:  71% (108/152)   Receiving objects:  72% (110/152)   remote: Total 152 (delta 54), reused 136 (delta 38), pack-reused 0[K
+14.0s 9 Receiving objects:  73% (111/152)   Receiving objects:  74% (113/152)   Receiving objects:  75% (114/152)   Receiving objects:  76% (116/152)   Receiving objects:  77% (118/152)   Receiving objects:  78% (119/152)   Receiving objects:  79% (121/152)   Receiving objects:  80% (122/152)   Receiving objects:  81% (124/152)   Receiving objects:  82% (125/152)   Receiving objects:  83% (127/152)   Receiving objects:  84% (128/152)   Receiving objects:  85% (130/152)   Receiving objects:  86% (131/152)   Receiving objects:  87% (133/152)   Receiving objects:  88% (134/152)   Receiving objects:  89% (136/152)   Receiving objects:  90% (137/152)   Receiving objects:  91% (139/152)   Receiving objects:  92% (140/152)   Receiving objects:  93% (142/152)   Receiving objects:  94% (143/152)   Receiving objects:  95% (145/152)   Receiving objects:  96% (146/152)   Receiving objects:  97% (148/152)   Receiving objects:  98% (149/152)   Receiving objects:  99% (151/152)   Receiving objects: 100% (152/152)   Receiving objects: 100% (152/152), 388.55 KiB | 1.92 MiB/s, done.
+14.0s 10 Resolving deltas:   0% (0/54)   Resolving deltas:   1% (1/54)   Resolving deltas:  20% (11/54)   Resolving deltas:  24% (13/54)   Resolving deltas:  29% (16/54)   Resolving deltas:  66% (36/54)   Resolving deltas: 100% (54/54)   Resolving deltas: 100% (54/54), done.
+15.4s 11 Wed Oct  6 01:12:17 2021
+15.4s 12 +-----------------------------------------------------------------------------+
+15.4s 13 | NVIDIA-SMI 450.119.04   Driver Version: 450.119.04   CUDA Version: 11.0     |
+15.4s 14 |-------------------------------+----------------------+----------------------+
+15.4s 15 | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+15.4s 16 | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+15.4s 17 |                               |                      |               MIG M. |
+15.4s 18 |===============================+======================+======================|
+15.4s 19 |   0  Tesla P100-PCIE...  Off  | 00000000:00:04.0 Off |                    0 |
+15.4s 20 | N/A   39C    P0    26W / 250W |      0MiB / 16280MiB |      0%      Default |
+15.4s 21 |                               |                      |                  N/A |
+15.4s 22 +-------------------------------+----------------------+----------------------+
+15.4s 23 
+15.4s 24 +-----------------------------------------------------------------------------+
+15.4s 25 | Processes:                                                                  |
+15.4s 26 |  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+15.4s 27 |        ID   ID                                                   Usage      |
+15.4s 28 |=============================================================================|
+15.4s 29 |  No running processes found                                                 |
+15.4s 30 +-----------------------------------------------------------------------------+
+144.1s 31 Fold 0
+172.3s 32 train run device : cuda:0
+313.9s 33 {'epoch': 1, 'lr': 0.001, 'train_loss': 0.020615140265230314, 'mae': 1.9765277, 'elapsed_time': 115.28289461135864}
+429.8s 34 {'epoch': 2, 'lr': 0.000999938933078422, 'train_loss': 0.006617479983191367, 'mae': 1.1685174, 'elapsed_time': 115.29954266548157}
+545.5s 35 {'epoch': 3, 'lr': 0.000999755747381037, 'train_loss': 0.005304684522058728, 'mae': 1.0637151, 'elapsed_time': 115.15247678756714}
+661.0s 36 {'epoch': 4, 'lr': 0.000999450488106175, 'train_loss': 0.004881467700320573, 'mae': 1.04383, 'elapsed_time': 114.87014818191528}
+777.0s 37 {'epoch': 5, 'lr': 0.0009990232305719944, 'train_loss': 0.004496022264458945, 'mae': 0.838778, 'elapsed_time': 115.35250544548035}
+892.6s 38 {'epoch': 6, 'lr': 0.0009984740801978983, 'train_loss': 0.00414199211429175, 'mae': 0.8543034, 'elapsed_time': 114.9995059967041}
+1007.8s 39 {'epoch': 7, 'lr': 0.0009978031724785245, 'train_loss': 0.0038452645873612644, 'mae': 0.6847822, 'elapsed_time': 115.19772028923035}
+1123.9s 40 {'epoch': 8, 'lr': 0.000997010672950314, 'train_loss': 0.0036994941893044174, 'mae': 0.7668913, 'elapsed_time': 115.50492882728577}
+1238.7s 41 {'epoch': 9, 'lr': 0.0009960967771506664, 'train_loss': 0.003621251232838141, 'mae': 0.7144324, 'elapsed_time': 114.8218605518341}
+1353.9s 42 {'epoch': 10, 'lr': 0.0009950617105696957, 'train_loss': 0.0033336207621179723, 'mae': 0.62071115, 'elapsed_time': 115.24489116668701}
+1469.4s 43 {'epoch': 11, 'lr': 0.0009939057285945929, 'train_loss': 0.003207378476522394, 'mae': 0.5638238, 'elapsed_time': 114.91389322280884}
+1585.1s 44 {'epoch': 12, 'lr': 0.0009926291164466126, 'train_loss': 0.003119019297494092, 'mae': 0.54858047, 'elapsed_time': 115.02001786231995}
+1700.6s 45 {'epoch': 13, 'lr': 0.0009912321891107005, 'train_loss': 0.0031166777424538983, 'mae': 0.5296612, 'elapsed_time': 114.92994260787964}
+1816.1s 46 {'epoch': 14, 'lr': 0.0009897152912577737, 'train_loss': 0.002990148727016152, 'mae': 0.49824074, 'elapsed_time': 114.8761887550354}
+1932.0s 47 {'epoch': 15, 'lr': 0.0009880787971596797, 'train_loss': 0.00298306531833844, 'mae': 0.50224245, 'elapsed_time': 115.29574203491211}
+2046.8s 48 {'epoch': 16, 'lr': 0.0009863231105968495, 'train_loss': 0.002880513847782724, 'mae': 0.47979006, 'elapsed_time': 114.8668692111969}
+2162.5s 49 {'epoch': 17, 'lr': 0.000984448664758672, 'train_loss': 0.0027898660651732156, 'mae': 0.4770287, 'elapsed_time': 115.03855657577515}
+2278.0s 50 {'epoch': 18, 'lr': 0.0009824559221366096, 'train_loss': 0.002791802020776817, 'mae': 0.4745227, 'elapsed_time': 114.93975067138672}
+2394.2s 51 {'epoch': 19, 'lr': 0.0009803453744100864, 'train_loss': 0.0026297647459093037, 'mae': 0.44545, 'elapsed_time': 115.53539299964905}
+2509.9s 52 {'epoch': 20, 'lr': 0.0009781175423251728, 'train_loss': 0.002637237801190004, 'mae': 0.4350043, 'elapsed_time': 115.09029817581177}
+2626.0s 53 {'epoch': 21, 'lr': 0.0009757729755661004, 'train_loss': 0.0026901248998006818, 'mae': 0.50573903, 'elapsed_time': 115.34200048446655}
+2740.9s 54 {'epoch': 22, 'lr': 0.0009733122526196342, 'train_loss': 0.002671444746360153, 'mae': 0.3908857, 'elapsed_time': 114.97217273712158}
+2856.7s 55 {'epoch': 23, 'lr': 0.000970735980632341, 'train_loss': 0.0026913762759143266, 'mae': 0.45250693, 'elapsed_time': 115.03783345222473}
+2971.6s 56 {'epoch': 24, 'lr': 0.0009680447952607838, 'train_loss': 0.002632888737816618, 'mae': 0.42474034, 'elapsed_time': 114.8540723323822}
+3086.7s 57 {'epoch': 25, 'lr': 0.0009652393605146839, 'train_loss': 0.002924512612100782, 'mae': 0.46033067, 'elapsed_time': 115.11271047592163}
+3201.6s 58 {'epoch': 26, 'lr': 0.0009623203685930864, 'train_loss': 0.0025743258130755784, 'mae': 0.4628318, 'elapsed_time': 114.96613025665283}
+3316.8s 59 {'epoch': 27, 'lr': 0.00095928853971357, 'train_loss': 0.0025055861454815007, 'mae': 0.42295164, 'elapsed_time': 115.17636704444885}
+3431.9s 60 {'epoch': 28, 'lr': 0.0009561446219345448, 'train_loss': 0.002305785406101927, 'mae': 0.40407392, 'elapsed_time': 115.13336515426636}
+3547.3s 61 {'epoch': 29, 'lr': 0.0009528893909706791, 'train_loss': 0.0025433954172394304, 'mae': 0.35666272, 'elapsed_time': 115.39933109283447}
+3663.3s 62 {'epoch': 30, 'lr': 0.0009495236500015041, 'train_loss': 0.0022518803384661123, 'mae': 0.34261036, 'elapsed_time': 115.30048966407776}
+3779.1s 63 {'epoch': 31, 'lr': 0.0009460482294732414, 'train_loss': 0.0023459375225565464, 'mae': 0.4062271, 'elapsed_time': 115.15390872955322}
+3894.3s 64 {'epoch': 32, 'lr': 0.0009424639868939027, 'train_loss': 0.0023048658825017667, 'mae': 0.33385384, 'elapsed_time': 115.27547240257263}
+4010.0s 65 {'epoch': 33, 'lr': 0.0009387718066217117, 'train_loss': 0.0024073977178892133, 'mae': 0.36014065, 'elapsed_time': 115.06127309799194}
+4125.3s 66 {'epoch': 34, 'lr': 0.000934972599646904, 'train_loss': 0.0022145114444082664, 'mae': 0.35619104, 'elapsed_time': 115.24962043762207}
+4240.2s 67 {'epoch': 35, 'lr': 0.0009310673033669515, 'train_loss': 0.002477259483654978, 'mae': 0.4605272, 'elapsed_time': 114.92091584205627}
+4355.4s 68 {'epoch': 36, 'lr': 0.0009270568813552751, 'train_loss': 0.00247895806420513, 'mae': 0.35044113, 'elapsed_time': 115.21087837219238}
+4470.7s 69 {'epoch': 37, 'lr': 0.0009229423231234969, 'train_loss': 0.0022293152328336217, 'mae': 0.36750716, 'elapsed_time': 115.28329253196716}
+4585.8s 70 {'epoch': 38, 'lr': 0.0009187246438772933, 'train_loss': 0.0021133712007163612, 'mae': 0.33508408, 'elapsed_time': 115.15198183059692}
+4700.8s 71 {'epoch': 39, 'lr': 0.0009144048842659075, 'train_loss': 0.002218128196682813, 'mae': 0.3763808, 'elapsed_time': 114.96708512306213}
+4815.8s 72 {'epoch': 40, 'lr': 0.0009099841101253861, 'train_loss': 0.0022941301740345534, 'mae': 0.3353811, 'elapsed_time': 115.08090853691101}
+4930.7s 73 {'epoch': 41, 'lr': 0.0009054634122155986, 'train_loss': 0.0022916487779164646, 'mae': 0.32943103, 'elapsed_time': 114.82007622718811}
+5046.3s 74 {'epoch': 42, 'lr': 0.0009008439059511095, 'train_loss': 0.0022070286352362674, 'mae': 0.33002356, 'elapsed_time': 115.04315972328186}
+5161.4s 75 {'epoch': 43, 'lr': 0.0008961267311259662, 'train_loss': 0.0022691749135060686, 'mae': 0.30297685, 'elapsed_time': 115.05966401100159}
+5277.3s 76 {'epoch': 44, 'lr': 0.0008913130516324728, 'train_loss': 0.0019817583633227566, 'mae': 0.2932316, 'elapsed_time': 115.20308351516724}
+5393.1s 77 {'epoch': 45, 'lr': 0.0008864040551740152, 'train_loss': 0.0021396491928377874, 'mae': 0.4439005, 'elapsed_time': 115.1922709941864}
+5508.3s 78 {'epoch': 46, 'lr': 0.000881400952972015, 'train_loss': 0.00217884412273577, 'mae': 0.33782983, 'elapsed_time': 115.21205139160156}
+5623.9s 79 {'epoch': 47, 'lr': 0.0008763049794670771, 'train_loss': 0.0019836163818539965, 'mae': 0.31645828, 'elapsed_time': 115.53812909126282}
+5739.2s 80 {'epoch': 48, 'lr': 0.0008711173920144113, 'train_loss': 0.002204903852345139, 'mae': 0.31016105, 'elapsed_time': 115.35692429542542}
+5854.5s 81 {'epoch': 49, 'lr': 0.0008658394705735983, 'train_loss': 0.002068244567359418, 'mae': 0.32000902, 'elapsed_time': 115.3370156288147}
+5969.7s 82 {'epoch': 50, 'lr': 0.0008604725173927781, 'train_loss': 0.002215561517091521, 'mae': 0.30621246, 'elapsed_time': 115.1987874507904}
+6085.2s 83 {'epoch': 51, 'lr': 0.0008550178566873405, 'train_loss': 0.0019922871270998967, 'mae': 0.34855983, 'elapsed_time': 115.4715678691864}
+6200.7s 84 {'epoch': 52, 'lr': 0.0008494768343131951, 'train_loss': 0.0019372383632491645, 'mae': 0.29706687, 'elapsed_time': 115.50514578819275}
+6316.1s 85 {'epoch': 53, 'lr': 0.0008438508174347005, 'train_loss': 0.0019835715682657447, 'mae': 0.26829988, 'elapsed_time': 115.40252351760864}
+6432.0s 86 {'epoch': 54, 'lr': 0.0008381411941873374, 'train_loss': 0.0020900315647689295, 'mae': 0.29732516, 'elapsed_time': 115.18276381492615}
+6547.2s 87 {'epoch': 55, 'lr': 0.0008323493733352073, 'train_loss': 0.0018512827188092561, 'mae': 0.26479763, 'elapsed_time': 115.17360711097717}
+6663.1s 88 {'epoch': 56, 'lr': 0.0008264767839234405, 'train_loss': 0.0022562051299315085, 'mae': 0.40438765, 'elapsed_time': 115.28922820091248}
+6778.6s 89 {'epoch': 57, 'lr': 0.000820524874925601, 'train_loss': 0.0019266714368477177, 'mae': 0.415993, 'elapsed_time': 115.40389752388}
+6893.9s 90 {'epoch': 58, 'lr': 0.0008144951148861737, 'train_loss': 0.0019060105171777935, 'mae': 0.27240172, 'elapsed_time': 115.29288506507874}
+7008.8s 91 {'epoch': 59, 'lr': 0.0008083889915582231, 'train_loss': 0.0020185873611053146, 'mae': 0.28753072, 'elapsed_time': 114.95273351669312}
+7124.0s 92 {'epoch': 60, 'lr': 0.0008022080115363123, 'train_loss': 0.0018439371946080778, 'mae': 0.27598798, 'elapsed_time': 115.21093153953552}
+7238.9s 93 {'epoch': 61, 'lr': 0.0007959536998847739, 'train_loss': 0.0017171982493105907, 'mae': 0.27494016, 'elapsed_time': 114.84699583053589}
+7354.1s 94 {'epoch': 62, 'lr': 0.0007896275997614226, 'train_loss': 0.0016688029452753509, 'mae': 0.2612275, 'elapsed_time': 115.2725100517273}
+7469.7s 95 {'epoch': 63, 'lr': 0.0007832312720368044, 'train_loss': 0.0017729857624209108, 'mae': 0.34804633, 'elapsed_time': 114.91787075996399}
+7585.0s 96 {'epoch': 64, 'lr': 0.0007767662949090749, 'train_loss': 0.002221502260983267, 'mae': 0.30848998, 'elapsed_time': 115.32320594787598}
+7700.2s 97 {'epoch': 65, 'lr': 0.000770234263514603, 'train_loss': 0.001789703257406603, 'mae': 0.26403835, 'elapsed_time': 115.18284821510315}
+7815.2s 98 {'epoch': 66, 'lr': 0.0007636367895343944, 'train_loss': 0.0017099421342984188, 'mae': 0.26124996, 'elapsed_time': 115.06205987930298}
+7930.5s 99 {'epoch': 67, 'lr': 0.0007569755007964335, 'train_loss': 0.0017403334334759304, 'mae': 0.29674405, 'elapsed_time': 115.26065158843994}
+8045.7s 100 {'epoch': 68, 'lr': 0.0007502520408740415, 'train_loss': 0.0017891779295097841, 'mae': 0.26466984, 'elapsed_time': 115.11170172691345}
+8160.8s 101 {'epoch': 69, 'lr': 0.0007434680686803488, 'train_loss': 0.0016091246925654832, 'mae': 0.24578457, 'elapsed_time': 115.1061782836914}
+8276.5s 102 {'epoch': 70, 'lr': 0.0007366252580589837, 'train_loss': 0.0016136379148428452, 'mae': 0.2375252, 'elapsed_time': 115.14102387428284}
+8392.3s 103 {'epoch': 71, 'lr': 0.0007297252973710754, 'train_loss': 0.001569821127376231, 'mae': 0.23944768, 'elapsed_time': 115.18869423866272}
+8507.6s 104 {'epoch': 72, 'lr': 0.0007227698890786777, 'train_loss': 0.0017190590384802019, 'mae': 0.25000077, 'elapsed_time': 115.31280946731567}
+8622.7s 105 {'epoch': 73, 'lr': 0.0007157607493247108, 'train_loss': 0.001504202507500462, 'mae': 0.31976524, 'elapsed_time': 115.11957383155823}
+8737.8s 106 {'epoch': 74, 'lr': 0.0007086996075095287, 'train_loss': 0.001710218449127524, 'mae': 0.2555445, 'elapsed_time': 115.04656863212585}
+8852.9s 107 {'epoch': 75, 'lr': 0.0007015882058642161, 'train_loss': 0.00164679412867669, 'mae': 0.2998995, 'elapsed_time': 115.16189241409302}
+8968.0s 108 {'epoch': 76, 'lr': 0.0006944282990207193, 'train_loss': 0.0017778959680741161, 'mae': 0.25666955, 'elapsed_time': 115.02244877815247}
+9083.1s 109 {'epoch': 77, 'lr': 0.0006872216535789155, 'train_loss': 0.0015387126209425405, 'mae': 0.26601374, 'elapsed_time': 115.20635199546814}
+9198.3s 110 {'epoch': 78, 'lr': 0.0006799700476707321, 'train_loss': 0.001469800396618107, 'mae': 0.2247902, 'elapsed_time': 115.16960263252258}
+9314.3s 111 {'epoch': 79, 'lr': 0.0006726752705214191, 'train_loss': 0.0014636471341725136, 'mae': 0.24157807, 'elapsed_time': 115.37217783927917}
+9429.4s 112 {'epoch': 80, 'lr': 0.0006653391220080838, 'train_loss': 0.0014717287905489553, 'mae': 0.22811066, 'elapsed_time': 115.07210731506348}
+9544.5s 113 {'epoch': 81, 'lr': 0.0006579634122155988, 'train_loss': 0.001354409166228463, 'mae': 0.22412068, 'elapsed_time': 115.06926441192627}
+9660.3s 114 {'epoch': 82, 'lr': 0.0006505499609899903, 'train_loss': 0.001484674171373653, 'mae': 0.23533082, 'elapsed_time': 115.20016574859619}
+9775.1s 115 {'epoch': 83, 'lr': 0.0006431005974894184, 'train_loss': 0.0014160596320591991, 'mae': 0.22455226, 'elapsed_time': 114.85078692436218}
+9890.4s 116 {'epoch': 84, 'lr': 0.0006356171597328593, 'train_loss': 0.0013172042506115573, 'mae': 0.22585008, 'elapsed_time': 115.27544164657593}
+10005.7s 117 {'epoch': 85, 'lr': 0.0006281014941466028, 'train_loss': 0.0013721602399215705, 'mae': 0.22209752, 'elapsed_time': 115.28007698059082}
+10121.4s 118 {'epoch': 86, 'lr': 0.000620555455108673, 'train_loss': 0.001469742084345413, 'mae': 0.22627044, 'elapsed_time': 115.02900648117065}
+10236.5s 119 {'epoch': 87, 'lr': 0.0006129809044912885, 'train_loss': 0.0013630364011205372, 'mae': 0.21414563, 'elapsed_time': 115.16119289398193}
+10352.3s 120 {'epoch': 88, 'lr': 0.0006053797112014735, 'train_loss': 0.001339266536605524, 'mae': 0.2644122, 'elapsed_time': 115.13455152511597}
+10467.3s 121 {'epoch': 89, 'lr': 0.0005977537507199336, 'train_loss': 0.0015287104892841312, 'mae': 0.21636786, 'elapsed_time': 115.0049102306366}
+10582.6s 122 {'epoch': 90, 'lr': 0.0005901049046383074, 'train_loss': 0.0012873929139594514, 'mae': 0.21562992, 'elapsed_time': 115.30877232551575}
+10697.9s 123 {'epoch': 91, 'lr': 0.0005824350601949141, 'train_loss': 0.001290600401743743, 'mae': 0.21531153, 'elapsed_time': 115.26815962791443}
+10813.1s 124 {'epoch': 92, 'lr': 0.0005747461098091033, 'train_loss': 0.0011991368783199684, 'mae': 0.20837425, 'elapsed_time': 115.28295946121216}
+10928.7s 125 {'epoch': 93, 'lr': 0.0005670399506143305, 'train_loss': 0.0014783673094569492, 'mae': 0.2561783, 'elapsed_time': 114.91946077346802}
+11043.7s 126 {'epoch': 94, 'lr': 0.0005593184839900673, 'train_loss': 0.0014106561787145038, 'mae': 0.21364833, 'elapsed_time': 114.9733533859253}
+11159.0s 127 {'epoch': 95, 'lr': 0.0005515836150926644, 'train_loss': 0.0012191843516714846, 'mae': 0.20649038, 'elapsed_time': 115.22939610481262}
+11274.8s 128 {'epoch': 96, 'lr': 0.0005438372523852832, 'train_loss': 0.0011482190681439983, 'mae': 0.207147, 'elapsed_time': 115.18164849281311}
+11390.2s 129 {'epoch': 97, 'lr': 0.00053608130716701, 'train_loss': 0.0011734955987940568, 'mae': 0.20322065, 'elapsed_time': 115.35503602027893}
+11506.2s 130 {'epoch': 98, 'lr': 0.0005283176931012729, 'train_loss': 0.0011618430376289853, 'mae': 0.20777445, 'elapsed_time': 115.41112875938416}
+11621.1s 131 {'epoch': 99, 'lr': 0.0005205483257436734, 'train_loss': 0.0011848163603995713, 'mae': 0.20941736, 'elapsed_time': 114.95778346061707}
+11736.0s 132 {'epoch': 100, 'lr': 0.0005127751220693511, 'train_loss': 0.0011427975144308873, 'mae': 0.20540775, 'elapsed_time': 114.84962773323059}
+11850.9s 133 {'epoch': 101, 'lr': 0.0005049999999999998, 'train_loss': 0.0011562020793764538, 'mae': 0.3387192, 'elapsed_time': 114.91940402984619}
+11966.0s 134 {'epoch': 102, 'lr': 0.0004972248779306486, 'train_loss': 0.001269325711366315, 'mae': 0.20162503, 'elapsed_time': 115.09112358093262}
+12081.5s 135 {'epoch': 103, 'lr': 0.0004894516742563262, 'train_loss': 0.0010819191040287277, 'mae': 0.23816876, 'elapsed_time': 114.87487864494324}
+12196.8s 136 {'epoch': 104, 'lr': 0.00048168230689872663, 'train_loss': 0.0014634667270532343, 'mae': 0.21885605, 'elapsed_time': 115.28730630874634}
+12311.6s 137 {'epoch': 105, 'lr': 0.0004739186928329896, 'train_loss': 0.0011154791522916775, 'mae': 0.21591206, 'elapsed_time': 114.83507537841797}
+12426.4s 138 {'epoch': 106, 'lr': 0.00046616274761471655, 'train_loss': 0.0010533308268403123, 'mae': 0.19924776, 'elapsed_time': 114.79997277259827}
+12542.2s 139 {'epoch': 107, 'lr': 0.0004584163849073352, 'train_loss': 0.0010468431014624394, 'mae': 0.19715953, 'elapsed_time': 115.12685513496399}
+12657.5s 140 {'epoch': 108, 'lr': 0.0004506815160099324, 'train_loss': 0.0010842767863172107, 'mae': 0.20585124, 'elapsed_time': 114.68322539329529}
+12772.7s 141 {'epoch': 109, 'lr': 0.0004429600493856693, 'train_loss': 0.0010617570166529765, 'mae': 0.20894969, 'elapsed_time': 115.17129421234131}
+12887.7s 142 {'epoch': 110, 'lr': 0.00043525389019089656, 'train_loss': 0.0010163987766410674, 'mae': 0.1982843, 'elapsed_time': 115.03459310531616}
+13002.9s 143 {'epoch': 111, 'lr': 0.0004275649398050856, 'train_loss': 0.000996826401732077, 'mae': 0.2360261, 'elapsed_time': 115.21733617782593}
+13118.0s 144 {'epoch': 112, 'lr': 0.0004198950953616921, 'train_loss': 0.0010159839468041028, 'mae': 0.19256501, 'elapsed_time': 115.02665877342224}
+13233.8s 145 {'epoch': 113, 'lr': 0.0004122462492800662, 'train_loss': 0.0009639304901508404, 'mae': 0.192678, 'elapsed_time': 115.21422958374023}
+13349.0s 146 {'epoch': 114, 'lr': 0.0004046202887985263, 'train_loss': 0.0009533717377867976, 'mae': 0.19150944, 'elapsed_time': 115.15668678283691}
+13464.5s 147 {'epoch': 115, 'lr': 0.0003970190955087115, 'train_loss': 0.0009556138744815997, 'mae': 0.1927956, 'elapsed_time': 114.94330024719238}
+13579.4s 148 {'epoch': 116, 'lr': 0.0003894445448913267, 'train_loss': 0.0009742426355798329, 'mae': 0.19359013, 'elapsed_time': 114.94800305366516}
+13694.7s 149 {'epoch': 117, 'lr': 0.00038189850585339675, 'train_loss': 0.00093114932405289, 'mae': 0.1972858, 'elapsed_time': 115.25380825996399}
+13810.3s 150 {'epoch': 118, 'lr': 0.0003743828402671403, 'train_loss': 0.0009154107032814036, 'mae': 0.18777803, 'elapsed_time': 115.59945058822632}
+13926.2s 151 {'epoch': 119, 'lr': 0.0003668994025105814, 'train_loss': 0.0009141179059636443, 'mae': 0.19020326, 'elapsed_time': 115.15597915649414}
+14041.6s 152 {'epoch': 120, 'lr': 0.00035945003901000945, 'train_loss': 0.0009076914132243755, 'mae': 0.20064485, 'elapsed_time': 115.4833915233612}
+14156.9s 153 {'epoch': 121, 'lr': 0.00035203658778440103, 'train_loss': 0.0008985451176377462, 'mae': 0.18479998, 'elapsed_time': 115.22653770446777}
+14273.2s 154 {'epoch': 122, 'lr': 0.0003446608779919159, 'train_loss': 0.0008771963424936204, 'mae': 0.18615605, 'elapsed_time': 115.59430384635925}
+14388.4s 155 {'epoch': 123, 'lr': 0.00033732472947858063, 'train_loss': 0.0009243900867301237, 'mae': 0.19644845, 'elapsed_time': 115.07072234153748}
+14503.7s 156 {'epoch': 124, 'lr': 0.00033002995232926766, 'train_loss': 0.0008947154811927227, 'mae': 0.1857846, 'elapsed_time': 115.34219861030579}
+14618.9s 157 {'epoch': 125, 'lr': 0.0003227783464210844, 'train_loss': 0.0008589032616508252, 'mae': 0.18720049, 'elapsed_time': 115.20391798019409}
+14734.1s 158 {'epoch': 126, 'lr': 0.00031557170097928054, 'train_loss': 0.0008534982616564468, 'mae': 0.187868, 'elapsed_time': 115.23756551742554}
+14849.5s 159 {'epoch': 127, 'lr': 0.0003084117941357834, 'train_loss': 0.0008414762424190286, 'mae': 0.18550019, 'elapsed_time': 115.39148759841919}
+14964.7s 160 {'epoch': 128, 'lr': 0.00030130039249047106, 'train_loss': 0.0008373610783958371, 'mae': 0.18920462, 'elapsed_time': 115.22295928001404}
+15079.9s 161 {'epoch': 129, 'lr': 0.00029423925067528897, 'train_loss': 0.0008263834210876758, 'mae': 0.18764043, 'elapsed_time': 115.14985966682434}
+15195.0s 162 {'epoch': 130, 'lr': 0.0002872301109213219, 'train_loss': 0.0009088897556708379, 'mae': 0.19075625, 'elapsed_time': 115.12719893455505}
+15310.2s 163 {'epoch': 131, 'lr': 0.0002802747026289243, 'train_loss': 0.0011734800799604755, 'mae': 0.18883675, 'elapsed_time': 115.19508337974548}
+15425.2s 164 {'epoch': 132, 'lr': 0.00027337474194101617, 'train_loss': 0.0008195002031906936, 'mae': 0.18345773, 'elapsed_time': 115.04031014442444}
+15541.2s 165 {'epoch': 133, 'lr': 0.00026653193131965077, 'train_loss': 0.000786595443612973, 'mae': 0.18387565, 'elapsed_time': 115.3594696521759}
+15656.6s 166 {'epoch': 134, 'lr': 0.00025974795912595813, 'train_loss': 0.0007994473442148893, 'mae': 0.18105601, 'elapsed_time': 115.25917959213257}
+15772.1s 167 {'epoch': 135, 'lr': 0.0002530244992035661, 'train_loss': 0.0007674902412149194, 'mae': 0.18128456, 'elapsed_time': 114.90165185928345}
+15887.4s 168 {'epoch': 136, 'lr': 0.00024636321046560527, 'train_loss': 0.0007707061502783799, 'mae': 0.18354611, 'elapsed_time': 115.18864893913269}
+16002.5s 169 {'epoch': 137, 'lr': 0.00023976573648539645, 'train_loss': 0.0007617529477946327, 'mae': 0.18051673, 'elapsed_time': 115.20746445655823}
+16118.5s 170 {'epoch': 138, 'lr': 0.00023323370509092462, 'train_loss': 0.0007564356306171559, 'mae': 0.18081467, 'elapsed_time': 115.44057583808899}
+16233.5s 171 {'epoch': 139, 'lr': 0.00022676872796319523, 'train_loss': 0.0007557106595005004, 'mae': 0.1799653, 'elapsed_time': 114.93681049346924}
+16349.5s 172 {'epoch': 140, 'lr': 0.00022037240023857702, 'train_loss': 0.0007534571669655102, 'mae': 0.18002945, 'elapsed_time': 115.4179196357727}
+16464.7s 173 {'epoch': 141, 'lr': 0.00021404630011522577, 'train_loss': 0.0007465104915009104, 'mae': 0.1803253, 'elapsed_time': 115.14178204536438}
+16579.9s 174 {'epoch': 142, 'lr': 0.00020779198846368737, 'train_loss': 0.0007409948044665765, 'mae': 0.17971659, 'elapsed_time': 115.26949310302734}
+16695.7s 175 {'epoch': 143, 'lr': 0.0002016110084417765, 'train_loss': 0.0007343090569502949, 'mae': 0.17933902, 'elapsed_time': 115.11002445220947}
+16811.6s 176 {'epoch': 144, 'lr': 0.00019550488511382584, 'train_loss': 0.0007271198815042172, 'mae': 0.18235189, 'elapsed_time': 115.20322394371033}
+16926.7s 177 {'epoch': 145, 'lr': 0.00018947512507439847, 'train_loss': 0.0007211104455058981, 'mae': 0.18093868, 'elapsed_time': 115.12970638275146}
+17041.9s 178 {'epoch': 146, 'lr': 0.00018352321607655904, 'train_loss': 0.0007176276451906201, 'mae': 0.1780447, 'elapsed_time': 115.187171459198}
+17157.8s 179 {'epoch': 147, 'lr': 0.0001776506266647923, 'train_loss': 0.0007082261915353847, 'mae': 0.17728493, 'elapsed_time': 115.25553274154663}
+17273.4s 180 {'epoch': 148, 'lr': 0.00017185880581266206, 'train_loss': 0.0007131153384360594, 'mae': 0.17784825, 'elapsed_time': 115.01878952980042}
+17388.4s 181 {'epoch': 149, 'lr': 0.000166149182565299, 'train_loss': 0.000702657538723519, 'mae': 0.17749801, 'elapsed_time': 115.01026606559753}
+17503.2s 182 {'epoch': 150, 'lr': 0.00016052316568680435, 'train_loss': 0.0006962976425224539, 'mae': 0.1787943, 'elapsed_time': 114.76293992996216}
+17618.1s 183 {'epoch': 151, 'lr': 0.00015498214331265893, 'train_loss': 0.0006887865529906046, 'mae': 0.17724185, 'elapsed_time': 114.99175548553467}
+17733.8s 184 {'epoch': 152, 'lr': 0.0001495274826072215, 'train_loss': 0.0006849678056752784, 'mae': 0.17620112, 'elapsed_time': 115.0101261138916}
+17849.4s 185 {'epoch': 153, 'lr': 0.00014416052942640132, 'train_loss': 0.0006795624458657502, 'mae': 0.1764186, 'elapsed_time': 115.02480292320251}
+17964.5s 186 {'epoch': 154, 'lr': 0.0001388826079855881, 'train_loss': 0.0006746556546916782, 'mae': 0.17714523, 'elapsed_time': 115.03022766113281}
+18079.7s 187 {'epoch': 155, 'lr': 0.00013369502053292245, 'train_loss': 0.0006684307708862288, 'mae': 0.17607908, 'elapsed_time': 115.07414150238037}
+18195.5s 188 {'epoch': 156, 'lr': 0.00012859904702798464, 'train_loss': 0.0006637397245056508, 'mae': 0.17544977, 'elapsed_time': 115.25395226478577}
+18311.2s 189 {'epoch': 157, 'lr': 0.00012359594482598432, 'train_loss': 0.0006608589967704119, 'mae': 0.17533694, 'elapsed_time': 115.06292963027954}
+18427.1s 190 {'epoch': 158, 'lr': 0.00011868694836752681, 'train_loss': 0.0006552536967546834, 'mae': 0.17563406, 'elapsed_time': 115.19775724411011}
+18541.9s 191 {'epoch': 159, 'lr': 0.0001138732688740332, 'train_loss': 0.0006517276397460023, 'mae': 0.17449991, 'elapsed_time': 114.91454243659973}
+18657.4s 192 {'epoch': 160, 'lr': 0.00010915609404889012, 'train_loss': 0.0006485938988848187, 'mae': 0.17536639, 'elapsed_time': 114.85928463935852}
+18772.7s 193 {'epoch': 161, 'lr': 0.00010453658778440103, 'train_loss': 0.0006447371350930889, 'mae': 0.17481391, 'elapsed_time': 115.23503732681274}
+18888.0s 194 {'epoch': 162, 'lr': 0.00010001588987461343, 'train_loss': 0.0006413593574756025, 'mae': 0.17533647, 'elapsed_time': 115.31276750564575}
+19003.2s 195 {'epoch': 163, 'lr': 9.559511573409192e-05, 'train_loss': 0.0006359762948492728, 'mae': 0.17503017, 'elapsed_time': 115.26854395866394}
+19118.1s 196 {'epoch': 164, 'lr': 9.12753561227063e-05, 'train_loss': 0.0006314957950133373, 'mae': 0.17488097, 'elapsed_time': 114.87724280357361}
+19233.3s 197 {'epoch': 165, 'lr': 8.705767687650262e-05, 'train_loss': 0.0006287212437296483, 'mae': 0.17496714, 'elapsed_time': 115.20388674736023}
+19348.4s 198 {'epoch': 166, 'lr': 8.294311864472445e-05, 'train_loss': 0.0006247160651377292, 'mae': 0.1741169, 'elapsed_time': 115.08996319770813}
+19464.4s 199 {'epoch': 167, 'lr': 7.89326966330478e-05, 'train_loss': 0.0006214135938069139, 'mae': 0.17358346, 'elapsed_time': 115.37510180473328}
+19580.2s 200 {'epoch': 168, 'lr': 7.502740035309526e-05, 'train_loss': 0.000618895238192568, 'mae': 0.17529841, 'elapsed_time': 115.10822677612305}
+19695.5s 201 {'epoch': 169, 'lr': 7.12281933782875e-05, 'train_loss': 0.0006166554090052824, 'mae': 0.17444843, 'elapsed_time': 115.37661027908325}
+19810.9s 202 {'epoch': 170, 'lr': 6.75360131060967e-05, 'train_loss': 0.0006123930472581887, 'mae': 0.17490973, 'elapsed_time': 115.21703338623047}
+19925.8s 203 {'epoch': 171, 'lr': 6.395177052675792e-05, 'train_loss': 0.0006098061001373886, 'mae': 0.17415307, 'elapsed_time': 115.08540606498718}
+20041.1s 204 {'epoch': 172, 'lr': 6.047634999849528e-05, 'train_loss': 0.0006074812307687213, 'mae': 0.17353067, 'elapsed_time': 115.29732465744019}
+20156.9s 205 {'epoch': 173, 'lr': 5.711060902932039e-05, 'train_loss': 0.0006042908751229879, 'mae': 0.17413127, 'elapsed_time': 115.09853219985962}
+20272.0s 206 {'epoch': 174, 'lr': 5.385537806545467e-05, 'train_loss': 0.0006007002850511834, 'mae': 0.17330249, 'elapsed_time': 115.11763381958008}
+20387.8s 207 {'epoch': 175, 'lr': 5.0711460286429424e-05, 'train_loss': 0.0005993972981140028, 'mae': 0.17356281, 'elapsed_time': 115.20456981658936}
+20502.8s 208 {'epoch': 176, 'lr': 4.767963140691315e-05, 'train_loss': 0.0005975399273734681, 'mae': 0.173554, 'elapsed_time': 114.97152543067932}
+20618.3s 209 {'epoch': 177, 'lr': 4.4760639485315563e-05, 'train_loss': 0.0005945482161056529, 'mae': 0.17383884, 'elapsed_time': 115.49513483047485}
+20733.3s 210 {'epoch': 178, 'lr': 4.195520473921563e-05, 'train_loss': 0.000592570486148317, 'mae': 0.17263448, 'elapsed_time': 115.00718593597412}
+20849.1s 211 {'epoch': 179, 'lr': 3.9264019367658385e-05, 'train_loss': 0.0005900755866552284, 'mae': 0.17307077, 'elapsed_time': 115.16069555282593}
+20964.2s 212 {'epoch': 180, 'lr': 3.6687747380365064e-05, 'train_loss': 0.0005883972696846411, 'mae': 0.17308046, 'elapsed_time': 115.11561155319214}
+21079.4s 213 {'epoch': 181, 'lr': 3.422702443389899e-05, 'train_loss': 0.0005862469804047985, 'mae': 0.1735346, 'elapsed_time': 115.21954250335693}
+21194.9s 214 {'epoch': 182, 'lr': 3.188245767482658e-05, 'train_loss': 0.0005845746035317936, 'mae': 0.1729565, 'elapsed_time': 115.43769240379333}
+21310.3s 215 {'epoch': 183, 'lr': 2.965462558991323e-05, 'train_loss': 0.0005835581278321046, 'mae': 0.17355844, 'elapsed_time': 115.4147219657898}
+21425.3s 216 {'epoch': 184, 'lr': 2.7544077863390004e-05, 'train_loss': 0.000581683054309637, 'mae': 0.17280032, 'elapsed_time': 114.98186159133911}
+21540.5s 217 {'epoch': 185, 'lr': 2.5551335241327672e-05, 'train_loss': 0.0005798566970428621, 'mae': 0.17264195, 'elapsed_time': 115.28028702735901}
+21655.8s 218 {'epoch': 186, 'lr': 2.367688940315011e-05, 'train_loss': 0.000578625838045769, 'mae': 0.17228153, 'elapsed_time': 115.1721293926239}
+21771.6s 219 {'epoch': 187, 'lr': 2.1921202840320077e-05, 'train_loss': 0.0005777334168582976, 'mae': 0.17302597, 'elapsed_time': 115.19437336921692}
+21887.0s 220 {'epoch': 188, 'lr': 2.0284708742225903e-05, 'train_loss': 0.0005762623326767747, 'mae': 0.17268956, 'elapsed_time': 115.3061695098877}
+22002.3s 221 {'epoch': 189, 'lr': 1.8767810889299086e-05, 'train_loss': 0.00057468972186761, 'mae': 0.17221135, 'elapsed_time': 115.39551591873169}
+22118.0s 222 {'epoch': 190, 'lr': 1.7370883553386936e-05, 'train_loss': 0.0005742672656775706, 'mae': 0.17322776, 'elapsed_time': 115.11996293067932}
+22233.3s 223 {'epoch': 191, 'lr': 1.6094271405406862e-05, 'train_loss': 0.0005737533304665047, 'mae': 0.17247896, 'elapsed_time': 115.24253726005554}
+22348.6s 224 {'epoch': 192, 'lr': 1.4938289430304022e-05, 'train_loss': 0.0005721936183824217, 'mae': 0.17248088, 'elapsed_time': 115.26990580558777}
+22463.9s 225 {'epoch': 193, 'lr': 1.3903222849333509e-05, 'train_loss': 0.0005718207232422036, 'mae': 0.17235571, 'elapsed_time': 115.39360213279724}
+22579.1s 226 {'epoch': 194, 'lr': 1.2989327049686102e-05, 'train_loss': 0.0005708773561177505, 'mae': 0.17219946, 'elapsed_time': 115.14062404632568}
+22695.1s 227 {'epoch': 195, 'lr': 1.2196827521475404e-05, 'train_loss': 0.0005698348157912631, 'mae': 0.17241386, 'elapsed_time': 115.32602262496948}
+22810.4s 228 {'epoch': 196, 'lr': 1.152591980210166e-05, 'train_loss': 0.0005701424286134832, 'mae': 0.17272182, 'elapsed_time': 115.3331413269043}
+22925.9s 229 {'epoch': 197, 'lr': 1.097676942800558e-05, 'train_loss': 0.0005691907514254529, 'mae': 0.17278321, 'elapsed_time': 115.43692278862}
+23040.9s 230 {'epoch': 198, 'lr': 1.0549511893824899e-05, 'train_loss': 0.0005679119693089432, 'mae': 0.17254528, 'elapsed_time': 115.1234221458435}
+23156.1s 231 {'epoch': 199, 'lr': 1.0244252618962858e-05, 'train_loss': 0.0005679757051006937, 'mae': 0.17265438, 'elapsed_time': 115.20252323150635}
+23271.3s 232 {'epoch': 200, 'lr': 1.006106692157801e-05, 'train_loss': 0.0005676368418081144, 'mae': 0.17272739, 'elapsed_time': 115.09185743331909}
+23330.4s 233 Total CV: 0.17219945788383484
+23394.8s 234 /bin/bash: !git: command not found
+23394.8s 235 /bin/bash: !git: command not found
+23394.8s 236 /bin/bash: !git: command not found
+23395.6s 237 /bin/bash: !git: command not found
+23400.0s 238 /opt/conda/lib/python3.7/site-packages/traitlets/traitlets.py:2561: FutureWarning: --Exporter.preprocessors=["remove_papermill_header.RemovePapermillHeader"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+23400.0s 239 FutureWarning,
+23400.0s 240 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+23400.3s 241 [NbConvertApp] Writing 39975 bytes to __notebook__.ipynb
+23402.1s 242 /opt/conda/lib/python3.7/site-packages/traitlets/traitlets.py:2561: FutureWarning: --Exporter.preprocessors=["nbconvert.preprocessors.ExtractOutputPreprocessor"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.
+23402.1s 243 FutureWarning,
+23402.1s 244 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+23402.7s 245 [NbConvertApp] Writing 316692 bytes to __results__.html
