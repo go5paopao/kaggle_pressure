@@ -238,6 +238,7 @@ class CustomLoss(nn.Module):
     https://www.kaggle.com/theoviel/deep-learning-starter-simple-lstm
     """
     def __init__(self, max_epoch=100, base_loss=nn.L1Loss):
+        super(CustomLoss, self).__init__()
         self.max_epoch = max_epoch
         self.base_loss = base_loss()
 
@@ -561,7 +562,7 @@ class Config:
     n_cv_fold = 5
     use_fp16 = False
 
-    pressure_loss_weight = 0.75
+    pressure_loss_weight = 0.7
 
     n_hidden = 512
     seq_features = [

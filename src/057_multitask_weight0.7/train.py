@@ -560,7 +560,7 @@ class Config:
     n_cv_fold = 5
     use_fp16 = False
 
-    pressure_loss_weight = 0.75
+    pressure_loss_weight = 0.7
 
     n_hidden = 512
     seq_features = [
