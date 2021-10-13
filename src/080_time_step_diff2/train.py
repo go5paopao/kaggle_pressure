@@ -90,7 +90,8 @@ def make_feature(train_df, test_df):
         df['cross2'] = df['time_step'] * df['u_out']
         df["u_in_sqrt"] = np.sqrt(df["u_in"] / 100)
 
-        df["diff_max_u_in_breath"] = (df["u_in"] / df.groupby("breath_id")["u_in"].transform("max")).fillna(0)
+        df["time_step_diff"] = df.groupby("breath_id")["time_step"].diff().fillna(0)
+        df["time_step_diff2"] = df.groupby("breath_id")["time_step"].diff(2).fillna(0)
         return df
 
     train_df = _make_feature_per_dataset(train_df)
@@ -111,7 +112,8 @@ def normalize_feature(train_df, valid_df, test_df):
         "area",
         "cross2",
         "u_in_sqrt",
-        "diff_max_u_in_breath"
+        "time_step_diff",
+        "time_step_diff2"
     ]
 
     scaler = StandardScaler()
@@ -612,7 +614,8 @@ class Config:
         "area",
         "cross2",
         "u_in_sqrt",
-        "diff_max_u_in_breath"
+        "time_step_diff",
+        "time_step_diff2"
     ]
     train_folds = [0]
 

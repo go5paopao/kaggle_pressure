@@ -25,7 +25,7 @@ elif 'COLAB_GPU' in set(os.environ.keys()):
     from google.colab import drive
     drive.mount('/content/drive')
 
-    gpu_info = !nvidia-smi
+    gpu_info = ""#!nvidia-smi
     gpu_info = '\n'.join(gpu_info)
     if gpu_info.find('failed') >= 0:
         print('Not connected to a GPU')
@@ -90,7 +90,10 @@ def make_feature(train_df, test_df):
         df['cross2'] = df['time_step'] * df['u_out']
         df["u_in_sqrt"] = np.sqrt(df["u_in"] / 100)
 
-        df["diff_max_u_in_breath"] = (df["u_in"] / df.groupby("breath_id")["u_in"].transform("max")).fillna(0)
+        df["time_step_diff"] = df.groupby("breath_id")["time_step"].diff().fillna(0)
+
+        df["max_time_step_diff"] = df.groupby("breath_id")["time_step_diff"].transform("max")
+
         return df
 
     train_df = _make_feature_per_dataset(train_df)
@@ -111,7 +114,8 @@ def normalize_feature(train_df, valid_df, test_df):
         "area",
         "cross2",
         "u_in_sqrt",
-        "diff_max_u_in_breath"
+        "time_step_diff",
+        "max_time_step_diff"
     ]
 
     scaler = StandardScaler()
@@ -612,7 +616,8 @@ class Config:
         "area",
         "cross2",
         "u_in_sqrt",
-        "diff_max_u_in_breath"
+        "time_step_diff",
+        "max_time_step_diff"
     ]
     train_folds = [0]
 

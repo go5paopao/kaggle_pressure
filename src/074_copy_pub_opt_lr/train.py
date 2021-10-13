@@ -14,33 +14,14 @@ from torch import nn
 from torch.optim.lr_scheduler import CosineAnnealingLR, ReduceLROnPlateau
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import Dataset
+from transformers import get_cosine_schedule_with_warmup
 
 USE_TPU = False
 EXP_DIR = Path("./")
 if "KAGGLE_URL_BASE" in set(os.environ.keys()):
     INPUT_DIR = Path("../input")
-    ENV = "kaggle"
-elif 'COLAB_GPU' in set(os.environ.keys()):
-
-    from google.colab import drive
-    drive.mount('/content/drive')
-
-    gpu_info = !nvidia-smi
-    gpu_info = '\n'.join(gpu_info)
-    if gpu_info.find('failed') >= 0:
-        print('Not connected to a GPU')
-    else:
-        print(gpu_info)
-
-    INPUT_DIR = Path("./drive/MyDrive/Colab Notebooks/VP/input/")
-    from requests import get
-    exp_name = get('http://172.28.0.2:9000/api/sessions').json()[0]['name'][:-6]  # remove .ipynb
-    EXP_DIR = Path(f'./drive/MyDrive/Colab Notebooks/VP/{exp_name}/')
-    EXP_DIR.mkdir(exist_ok=True)
-    ENV = "colab"
 else:
     INPUT_DIR = Path("../../input")
-    ENV = "other"
 
 
 def init_logger(log_file: Path = "./train.log"):
@@ -88,9 +69,8 @@ def make_feature(train_df, test_df):
         df["area"] = df["u_in"] * df["time_step"]
         df["area"] = df.groupby("breath_id")["area"].cumsum()
         df['cross2'] = df['time_step'] * df['u_out']
-        df["u_in_sqrt"] = np.sqrt(df["u_in"] / 100)
 
-        df["diff_max_u_in_breath"] = (df["u_in"] / df.groupby("breath_id")["u_in"].transform("max")).fillna(0)
+        df["u_in_sqrt"] = np.sqrt(df["u_in"] / 100)
         return df
 
     train_df = _make_feature_per_dataset(train_df)
@@ -110,8 +90,7 @@ def normalize_feature(train_df, valid_df, test_df):
         "u_in_diff_diff",
         "area",
         "cross2",
-        "u_in_sqrt",
-        "diff_max_u_in_breath"
+        "u_in_sqrt"
     ]
 
     scaler = StandardScaler()
@@ -123,11 +102,13 @@ def normalize_feature(train_df, valid_df, test_df):
 
 
 class PressureDataset(Dataset):
-    def __init__(self, df, seq_features, is_train=True):
+    def __init__(self, df, seq_features, target_dic, is_train=True):
 
         self.ids = df["id"].values
         self.breath_ids = df["breath_id"].unique()
         self.seq_features = seq_features
+
+        self.target_dic = target_dic
 
         self.r_dict = {
             5: 0,
@@ -156,6 +137,10 @@ class PressureDataset(Dataset):
             self.target_arr_dict = (
                 df.groupby("breath_id")["pressure"].apply(lambda x: x.values).to_dict()
             )
+            df["pressure_cls"] = df["pressure"].map(self.target_dic)
+            self.target_cls_arr_dict = (
+                df.groupby("breath_id")["pressure_cls"].apply(lambda x: x.values).to_dict()
+            )
 
     def __len__(self):
         return len(self.breath_ids)
@@ -177,7 +162,9 @@ class PressureDataset(Dataset):
             target = torch.tensor(self.target_arr_dict[breath_id], dtype=torch.float)
             target_diff = torch.zeros(target.shape, dtype=torch.float)
             target_diff[1:] = target[1:] - target[0:-1]
-            return features, target, target_diff
+
+            target_cls = torch.tensor(self.target_cls_arr_dict[breath_id], dtype=torch.long)
+            return features, target, target_diff, target_cls
         else:
             return features
 
@@ -213,6 +200,7 @@ class RNNModel(nn.Module):
             bidirectional=True,
         )
         # self.decoder_out = nn.Linear(n_hidden*2 + 8*2, 1)  # lstm_hidden + id_embedding
+
         self.decoder_out = nn.Sequential(
             nn.Linear(n_hidden * 2, n_hidden),
             nn.LayerNorm(n_hidden),
@@ -224,6 +212,12 @@ class RNNModel(nn.Module):
             nn.LayerNorm(n_hidden),
             nn.ReLU(),
             nn.Linear(n_hidden, 1),
+        )
+        self.classifier = nn.Sequential(
+            nn.Linear(n_hidden * 2, n_hidden),
+            nn.LayerNorm(n_hidden),
+            nn.ReLU(),
+            nn.Linear(n_hidden, 950),
         )
 
     def __call__(self, features):
@@ -248,10 +242,11 @@ class RNNModel(nn.Module):
         seq_hidden = self.seq_linear(seq_input)  # (batchsize, seq_len, 32)
 
         hidden, (h_n, c_n) = self.encoder_rnn(seq_hidden)
-        pred = self.decoder_out(hidden)
+        # pred = self.decoder_out(hidden)
+        cls_pred = self.classifier(hidden)
         diff_pred = self.decoder_diff_out(hidden)
-        pred = torch.cat([pred, diff_pred], dim=-1)
-        return pred
+        # pred = torch.cat([pred, diff_pred], dim=-1)
+        return cls_pred, diff_pred
 
 
 class CustomLoss(nn.Module):
@@ -300,6 +295,34 @@ class MultitaskLoss(nn.Module):
         return total_loss
 
 
+class MultitaskClsLoss(nn.Module):
+    """
+    Directly optimizes the competition metric
+    https://www.kaggle.com/theoviel/deep-learning-starter-simple-lstm
+    """
+
+    def __init__(self, p_loss_weight_init, p_loss_weight_final, p_loss_weight_decay_period):
+        super(MultitaskClsLoss, self).__init__()
+        self.p_weight_init = p_loss_weight_init
+        self.p_weight_final = p_loss_weight_final
+        self.p_weight_period = p_loss_weight_decay_period
+        self.pressure_cls_loss = nn.CrossEntropyLoss()
+        self.pressure_diff_loss = CustomLoss()
+
+    def __call__(self, cls_preds, cls_y, preds_diff, y_diff, u_out, epoch, iter_first=False):
+        epoch_weight = min(epoch / self.p_weight_period, 1.0)
+        p_weight = self.p_weight_init * (1 - epoch_weight) + self.p_weight_final * epoch_weight
+
+        p_cls_loss = self.pressure_cls_loss(cls_preds, cls_y)
+        p_diff_loss = self.pressure_diff_loss(preds_diff, y_diff, u_out, epoch)
+
+        total_loss = p_cls_loss * (p_weight) + p_diff_loss * (1 - p_weight)
+
+        if iter_first:
+            logger.info(f"multi task weight : {p_weight}")
+        return total_loss
+
+
 def train_one_epoch(
     model, loss_fn, data_loader, optimizer, config, device, epoch=0, scaler=None
 ):
@@ -309,9 +332,10 @@ def train_one_epoch(
 
     model.train()
 
-    for iter_i, (features, targets, targets_diff) in enumerate(data_loader):
+    for iter_i, (features, targets, targets_diff, cls_targets) in enumerate(data_loader):
         # input
         features = {k: v.to(device) for k, v in features.items()}
+        cls_targets = cls_targets.to(device)
         targets = targets.to(device)
         targets_diff = targets_diff.to(device)
         u_out = features["u_out"].to(device).view(-1)
@@ -320,15 +344,16 @@ def train_one_epoch(
         optimizer.zero_grad()
 
         with torch.set_grad_enabled(True):
-            preds = model(features)
+            p_cls_preds, p_diff_preds = model(features)
 
-            p_preds = preds[:, :, 0].view(-1)
-            p_diff_preds = preds[:, :, 1].view(-1)
-            targets = targets.view(-1)
+            p_cls_preds = p_cls_preds.view(-1, 950)
+            p_diff_preds = p_diff_preds.view(-1)
+            # targets = targets.view(-1)
+            cls_targets = cls_targets.view(-1)
             targets_diff = targets_diff.view(-1)
 
             loss = loss_fn(
-                p_preds, targets, p_diff_preds, targets_diff, u_out, epoch,
+                p_cls_preds, cls_targets, p_diff_preds, targets_diff, u_out, epoch,
                 iter_first=(iter_i == 0)
             )
             loss.backward()
@@ -347,17 +372,21 @@ def valid_one_epoch(model, loss_fn, data_loader, config, device):
     target_list = []
 
     model.eval()
-    for iter_i, (features, targets, targets_diff) in enumerate(data_loader):
+    for iter_i, (features, targets, targets_diff, cls_targets) in enumerate(data_loader):
         # input
         features = {k: v.to(device) for k, v in features.items()}
         targets = targets.to(device)
 
         with torch.no_grad():
-            preds = model(features)
-            preds = preds[:, :, 0].view(-1)
+
+            p_cls_preds, p_diff_preds = model(features)
+            p_cls_preds = p_cls_preds.view(-1, 950)
+
             targets = targets.view(-1)
 
-        pred_list.append(preds.detach().cpu().numpy())
+        pred_list.append(
+            np.argmax(p_cls_preds.detach().cpu().numpy(), axis=1)
+        )
         target_list.append(targets.detach().cpu().numpy())
 
     epoch_loss_per_data = epoch_loss / epoch_data_num
@@ -367,7 +396,8 @@ def valid_one_epoch(model, loss_fn, data_loader, config, device):
 
 
 def train_run(
-    train_df, valid_df, config, model_prefix="", save_best_model=True, save_model=True
+    train_df, valid_df, config, model_prefix="", save_best_model=True, save_model=True,
+    target_dic=None, target_dic_inv=None
 ):
 
     set_seed(config.seed)
@@ -388,10 +418,12 @@ def train_run(
     # Make data
     ###################################
     train_dataset = PressureDataset(
-        train_df, seq_features=config.seq_features, is_train=True
+        train_df, seq_features=config.seq_features, is_train=True,
+        target_dic=target_dic
     )
     valid_dataset = PressureDataset(
-        valid_df, seq_features=config.seq_features, is_train=True
+        valid_df, seq_features=config.seq_features, is_train=True,
+        target_dic=target_dic
     )
 
     # data loader
@@ -413,19 +445,22 @@ def train_run(
     # Optimiizer
     ##################
     lr = config.lr
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+    # optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr, weight_decay=config.adam_weight_decay)
 
     ##################
     # lr scheduler
     ##################
-    scheduler = config.SchedulerClass(optimizer, **config.scheduler_params)
+    # scheduler = config.SchedulerClass(optimizer, **config.scheduler_params)
+    scheduler = get_cosine_schedule_with_warmup(
+        optimizer, num_warmup_steps=config.n_epoch//10, num_training_steps=config.n_epoch)
 
     ##################
     # loss function
     ##################
     # loss_fn = nn.L1Loss()
     # loss_fn = CustomLoss()
-    loss_fn = MultitaskLoss(
+    loss_fn = MultitaskClsLoss(
         config.p_loss_weight_init,
         config.p_loss_weight_final,
         config.p_loss_weight_decay_period
@@ -455,10 +490,11 @@ def train_run(
         )
 
         # valid loop
-        valid_epoch_loss, val_preds, val_targets = valid_one_epoch(
+        valid_epoch_loss, val_cls_preds, val_targets = valid_one_epoch(
             model, loss_fn, valid_loader, config, device
         )
-
+        # change cls to numerical preds
+        val_preds = np.vectorize(target_dic_inv.get)(val_cls_preds)
         # calc metric
         val_score = mean_absolute_error(
             val_targets[val_calc_indices], val_preds[val_calc_indices]
@@ -527,7 +563,7 @@ def train_run(
     return best_val_score, results_list, best_model_path
 
 
-def test_predict(test_df, model_path, config):
+def test_predict(test_df, model_path, config, target_dic, target_dic_inv):
 
     set_seed(config.seed)
 
@@ -551,7 +587,7 @@ def test_predict(test_df, model_path, config):
     # Dataset & Dataloader
     ###################################
     test_dataset = PressureDataset(
-        test_df, seq_features=config.seq_features, is_train=False
+        test_df, seq_features=config.seq_features, is_train=False, target_dic=target_dic
     )
 
     # data loader
@@ -574,33 +610,36 @@ def test_predict(test_df, model_path, config):
         features = {k: v.to(device) for k, v in features.items()}
 
         with torch.no_grad():
-            preds = model(features)
-            preds = preds[:, :, 0].view(-1)
+            p_cls_preds, p_diff_preds = model(features)
+            p_cls_preds = p_cls_preds.view(-1, 950)
 
-        pred_list.append(preds.detach().cpu().numpy())
+        pred_list.append(
+            np.argmax(p_cls_preds.detach().cpu().numpy(), axis=1)
+        )
 
     test_preds = np.concatenate(pred_list, axis=0)
+    test_preds = np.vectorize(target_dic_inv.get)(test_preds)
     return test_preds
 
 
 class Config:
     seed = 2021
 
-    num_workers = 2
-    batch_size = 128
-    n_epoch = 200
-    lr = 1e-3
-
+    num_workers = 4
+    batch_size = 512
+    n_epoch = 50
+    lr = 5e-3
+    adam_weight_decay = 1e-3
     SchedulerClass = CosineAnnealingLR
-    scheduler_params = dict(T_max=200, eta_min=1e-5)
+    scheduler_params = dict(T_max=n_epoch, eta_min=1e-5)
     n_cv_fold = 5
     use_fp16 = False
 
-    p_loss_weight_init = 0.7
-    p_loss_weight_final = 0.9
-    p_loss_weight_decay_period = 150
+    p_loss_weight_init = 1.0  # 0.7
+    p_loss_weight_final = 1.0  # 0.9
+    p_loss_weight_decay_period = 300
 
-    n_hidden = 512
+    n_hidden = 256
     seq_features = [
         "time_from_u_out_change",
         "u_in",
@@ -611,8 +650,7 @@ class Config:
         "u_in_diff_diff",
         "area",
         "cross2",
-        "u_in_sqrt",
-        "diff_max_u_in_breath"
+        "u_in_sqrt"
     ]
     train_folds = [0]
 
@@ -629,6 +667,12 @@ def run():
 
     train_df, test_df = make_feature(train_df, test_df)
 
+    target_dic = {
+        v: i for i, v in
+        enumerate(sorted(train_df['pressure'].unique().tolist()))
+    }
+    target_dic_inv = {v: k for k, v in target_dic.items()}
+
     model_num = 0
     val_scores = []
     for fold_ix, (trn_idx, val_idx) in enumerate(
@@ -644,6 +688,7 @@ def run():
         _train_df, _valid_df, _test_df = normalize_feature(
             _train_df, _valid_df, test_df.copy()
         )
+
         best_val_score, results_list, best_model_path = train_run(
             _train_df,
             _valid_df,
@@ -651,13 +696,15 @@ def run():
             model_prefix=f"fold{fold_ix}",
             save_best_model=True,
             save_model=True,
+            target_dic=target_dic,
+            target_dic_inv=target_dic_inv
         )
         model_num += 1
 
         val_scores.append(best_val_score)
-        oof_preds[val_idx] = test_predict(_valid_df, best_model_path, config)
+        oof_preds[val_idx] = test_predict(_valid_df, best_model_path, config, target_dic, target_dic_inv)
         test_preds_list.append(
-            test_predict(_test_df, best_model_path, config)
+            test_predict(_test_df, best_model_path, config, target_dic, target_dic_inv)
         )
 
     test_preds = np.mean(test_preds_list, axis=0)
@@ -667,19 +714,19 @@ def run():
         INPUT_DIR / "ventilator-pressure-prediction/sample_submission.csv"
     )
     sub_df["pressure"] = test_preds
-    sub_df.to_csv(EXP_DIR / f"submission_{val_score:.5f}.csv", index=False)
+    sub_df.to_csv(f"submission_{val_score:.5f}.csv", index=False)
 
     # raw prediction
     for fold_ix, test_pred in enumerate(test_preds_list):
         sub_df[f"fold{fold_ix}"] = test_pred
-    sub_df.to_csv(EXP_DIR / "raw_submission.csv", index=False)
+    sub_df.to_csv("raw_submission.csv", index=False)
 
     # oof prediction
     train_df["preds"] = oof_preds
     save_cols = [
         "id", "breath_id", "time_step", "pressure", "preds"
     ]
-    train_df[save_cols].to_csv(EXP_DIR / "oof_df.csv", index=False)
+    train_df[save_cols].to_csv("oof_df.csv", index=False)
 
 
 logger = init_logger(EXP_DIR / "run.log")
