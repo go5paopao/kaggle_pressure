@@ -25,7 +25,7 @@ elif 'COLAB_GPU' in set(os.environ.keys()):
     from google.colab import drive
     drive.mount('/content/drive')
 
-    gpu_info = !nvidia-smi
+    gpu_info = "" # !nvidia-smi
     gpu_info = '\n'.join(gpu_info)
     if gpu_info.find('failed') >= 0:
         print('Not connected to a GPU')
