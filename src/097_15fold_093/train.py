@@ -642,8 +642,6 @@ def run():
     config = Config()
 
     folds = GroupKFold(n_splits=config.n_cv_fold)
-    oof_preds = np.zeros(len(train_df))
-    test_preds_list = []
 
     data_ix_unique = train_aug_df["data_ix"].unique()
     train_aug_df = train_aug_df.set_index("data_ix")
@@ -676,7 +674,6 @@ def run():
     gc.collect()
 
     model_num = 0
-    val_scores = []
     for fold_ix, (trn_idx, val_idx) in enumerate(
         folds.split(original_train_df, groups=original_train_df["breath_id"])
     ):
@@ -705,33 +702,34 @@ def run():
             save_model=True,
         )
         model_num += 1
+        logger.info(f"Best val score :{best_val_score:.7f}")
 
-        val_scores.append(best_val_score)
-        oof_preds[val_idx] = test_predict(_valid_df, best_model_path, config)
-        test_preds_list.append(
-            test_predict(_test_df, best_model_path, config)
+        oof_pred = test_predict(_valid_df, best_model_path, config)
+        test_pred = test_predict(_test_df, best_model_path, config)
+
+        # save result
+        exp_name = EXP_DIR.name
+        sub_df = pd.read_csv(
+            INPUT_DIR / "ventilator-pressure-prediction/sample_submission.csv"
         )
+        sub_df["pressure"] = test_pred
+        sub_df.to_csv(
+            EXP_DIR / f"{exp_name}_submission_fold{fold_ix}_{best_val_score:.5f}.csv",
+            index=False
+        )
+        # oof prediction
+        oof_indices = (train_df["breath_id"].isin(val_breath_ids)) \
+            & (train_df["breath_id_ix"] == 0)
 
-    test_preds = np.mean(test_preds_list, axis=0)
-    val_score = np.mean(val_scores)
-    logger.info(f"Total CV: {val_score}")
-    sub_df = pd.read_csv(
-        INPUT_DIR / "ventilator-pressure-prediction/sample_submission.csv"
-    )
-    sub_df["pressure"] = test_preds
-    sub_df.to_csv(EXP_DIR / f"submission_{val_score:.5f}.csv", index=False)
-
-    # raw prediction
-    for fold_ix, test_pred in enumerate(test_preds_list):
-        sub_df[f"fold{fold_ix}"] = test_pred
-    sub_df.to_csv(EXP_DIR / "raw_submission.csv", index=False)
-
-    # oof prediction
-    original_train_df["preds"] = oof_preds
-    save_cols = [
-        "id", "breath_id", "time_step", "pressure", "preds"
-    ]
-    original_train_df[save_cols].to_csv(EXP_DIR / "oof_df.csv", index=False)
+        original_train_df.loc[oof_indices, "preds"] = oof_pred
+        save_cols = [
+            "id", "breath_id", "time_step", "pressure", "preds"
+        ]
+        save_train_df = original_train_df.loc[oof_indices, save_cols]
+        save_train_df.to_csv(
+            EXP_DIR / f"{exp_name}_oof_fold{fold_ix}.csv",
+            index=False
+        )
 
 
 logger = init_logger(EXP_DIR / "run.log")
