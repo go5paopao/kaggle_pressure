@@ -630,7 +630,7 @@ class Config:
         "u_in_sqrt",
         "time_step_diff",
     ]
-    train_folds = [3, 4, 5]  # list(range(15))
+    train_folds = [7, 8, 9, 10]  # list(range(15))
 
 
 def run():
