@@ -83,7 +83,9 @@ def make_feature(df):
         df.groupby("breath_id")["u_in"].diff()
         / df.groupby("breath_id")["time_step"].diff()
     ).fillna(0)
-    df["u_in_diff2"] = df.groupby("breath_id")["u_in_diff"].shift(1).fillna(0)
+    df["u_in_diff_shift1"] = df.groupby("breath_id")["u_in_diff"].shift(1).fillna(0)
+    df["u_in_diff_shift2"] = df.groupby("breath_id")["u_in_diff"].shift(2).fillna(0)
+
     df["u_in_diff_diff"] = df.groupby("breath_id")["u_in_diff"].diff().fillna(0)
     df["area"] = df["u_in"] * df["time_step"]
     df["area"] = df.groupby("breath_id")["area"].cumsum()
@@ -102,7 +104,8 @@ def normalize_feature(train_df, valid_df, test_df):
         "u_in",
         "u_in_cumsum_per_time",
         "u_in_diff",
-        "u_in_diff2",
+        "u_in_diff_shift1",
+        "u_in_diff_shift2",
         "u_in_diff_diff",
         "area",
         "cross2",
@@ -609,7 +612,7 @@ class Config:
 
     SchedulerClass = CosineAnnealingLR
     scheduler_params = dict(T_max=250, eta_min=1e-5)
-    n_cv_fold = 15
+    n_cv_fold = 5
     use_fp16 = False
 
     p_loss_weight_init = 0.7
@@ -623,14 +626,15 @@ class Config:
         "u_out",
         "u_in_cumsum_per_time",
         "u_in_diff",
-        "u_in_diff2",
+        "u_in_diff_shift1",
+        "u_in_diff_shift2",
         "u_in_diff_diff",
         "area",
         "cross2",
         "u_in_sqrt",
         "time_step_diff",
     ]
-    train_folds = [6]  # list(range(15))
+    train_folds = [0, 1]
 
 
 def run():
