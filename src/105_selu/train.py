@@ -216,7 +216,7 @@ class RNNModel(nn.Module):
         self.seq_linear = nn.Sequential(
             nn.Linear(self.seq_feature_len + 8 * 2, n_hidden),
             nn.LayerNorm(n_hidden),
-            nn.ReLU(),
+            nn.SELU(),
             # nn.Linear(n_hidden*2, n_hidden),
             # nn.ReLU()
         )
@@ -235,13 +235,13 @@ class RNNModel(nn.Module):
         self.decoder_out = nn.Sequential(
             nn.Linear(n_hidden * 2, n_hidden),
             nn.LayerNorm(n_hidden),
-            nn.ReLU(),
+            nn.SELU(),
             nn.Linear(n_hidden, 1),
         )
         self.decoder_diff_out = nn.Sequential(
             nn.Linear(n_hidden * 2, n_hidden),
             nn.LayerNorm(n_hidden),
-            nn.ReLU(),
+            nn.SELU(),
             nn.Linear(n_hidden, 1),
         )
 
@@ -614,7 +614,7 @@ class Config:
 
     SchedulerClass = CosineAnnealingLR
     scheduler_params = dict(T_max=250, eta_min=1e-5)
-    n_cv_fold = 15
+    n_cv_fold = 5
     use_fp16 = False
 
     p_loss_weight_init = 0.7
@@ -637,7 +637,7 @@ class Config:
         "u_in_sqrt",
         "time_step_diff",
     ]
-    train_folds = [3, 4]
+    train_folds = [0, 1, 2, 3, 4]
 
 
 def run():

@@ -6,3 +6,4 @@ predict/
 .ipynb_checkpoints/
 src/*/*bin
 src/*/*csv
+src/*/*/*csv

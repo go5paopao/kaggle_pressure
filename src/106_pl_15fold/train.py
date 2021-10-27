@@ -637,48 +637,55 @@ class Config:
         "u_in_sqrt",
         "time_step_diff",
     ]
-    train_folds = [3, 4]
+    train_folds = [2, 3]
+    use_aug = False
 
 
 def run():
+    config = Config()
+
     train_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/train.csv")
     test_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/test.csv")
-    train_aug_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/train_aug.csv")
-    original_train_df = train_df.copy()
+    if config.use_aug:
+        train_aug_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/train_aug.csv")
 
-    config = Config()
+    pl_test_df = pd.read_csv(INPUT_DIR / "ensemble_0.114/raw_submission.csv")
+    pl_test_df = test_df.merge(pl_test_df, on="id", how="left")
+    original_train_df = train_df.copy()
 
     folds = GroupKFold(n_splits=config.n_cv_fold)
 
-    data_ix_unique = train_aug_df["data_ix"].unique()
-    train_aug_df = train_aug_df.set_index("data_ix")
-    aug_df_list = []
-    for data_ix in data_ix_unique:
-        logger.info(f"create aug feature {data_ix}")
-        _train_aug_df = train_aug_df.loc[data_ix].reset_index()
-        _train_aug_df = make_feature(_train_aug_df)
-        aug_df_list.append(_train_aug_df)
-    del train_aug_df
-    gc.collect()
-
-    train_aug_df = pd.concat(aug_df_list, axis=0, ignore_index=True)
-    del aug_df_list
-    gc.collect()
+    if config.use_aug:
+        data_ix_unique = train_aug_df["data_ix"].unique()
+        train_aug_df = train_aug_df.set_index("data_ix")
+        aug_df_list = []
+        for data_ix in data_ix_unique:
+            logger.info(f"create aug feature {data_ix}")
+            _train_aug_df = train_aug_df.loc[data_ix].reset_index()
+            _train_aug_df = make_feature(_train_aug_df)
+            aug_df_list.append(_train_aug_df)
+        del train_aug_df
+        gc.collect()
+        train_aug_df = pd.concat(aug_df_list, axis=0, ignore_index=True)
+        del aug_df_list
+        gc.collect()
 
     train_df = make_feature(train_df)
     test_df = make_feature(test_df)
-
-    # aug_dfのカラム名を合わせる
-    train_aug_df = train_aug_df.rename(columns={"data_ix": "breath_id_ix"})
-    # breath_id_ix == 0をoriginalデータとするため、augmentのほうはインクリメント
-    train_aug_df["breath_id_ix"] = train_aug_df["breath_id_ix"] + 1
+    pl_test_df = make_feature(pl_test_df)
 
     train_df["breath_id_ix"] = 0
-    train_df = pd.concat([
-        train_df, train_aug_df
-    ], axis=0, ignore_index=True)
-    del train_aug_df
-    gc.collect()
+    if config.use_aug:
+        # aug_dfのカラム名を合わせる
+        train_aug_df = train_aug_df.rename(columns={"data_ix": "breath_id_ix"})
+        # breath_id_ix == 0をoriginalデータとするため、augmentのほうはインクリメント
+        train_aug_df["breath_id_ix"] = train_aug_df["breath_id_ix"] + 1
+
+        train_df = pd.concat([
+            train_df, train_aug_df
+        ], axis=0, ignore_index=True)
+        del train_aug_df
+        gc.collect()
 
     model_num = 0
     for fold_ix, (trn_idx, val_idx) in enumerate(
@@ -696,6 +703,14 @@ def run():
             (train_df["breath_id"].isin(val_breath_ids))
             & (train_df["breath_id_ix"] == 0)
         ].reset_index(drop=True)
+
+        pl_drop_cols = ["pressure"] + [
+            f"fold{ix}" for ix in range(config.n_cv_fold) if ix != fold_ix
+        ]
+        _pl_test_df = pl_test_df.drop(pl_drop_cols, axis=1).rename(
+            columns={f"fold{fold_ix}": "pressure"}).reset_index(drop=True)
+        _pl_test_df["breath_id_ix"] = 0
+        _train_df = pd.concat([_train_df, _pl_test_df], axis=0, ignore_index=True)
 
         _train_df, _valid_df, _test_df = normalize_feature(
             _train_df, _valid_df, test_df.copy()
