@@ -1,6 +1,7 @@
 import gc
 import os
 import random
+import subprocess
 import time
 from logging import INFO, FileHandler, Formatter, StreamHandler, getLogger
 from pathlib import Path
@@ -26,12 +27,8 @@ elif 'COLAB_GPU' in set(os.environ.keys()):
     from google.colab import drive
     drive.mount('/content/drive')
 
-    gpu_info = ""  # !nvidia-smi
-    gpu_info = '\n'.join(gpu_info)
-    if gpu_info.find('failed') >= 0:
-        print('Not connected to a GPU')
-    else:
-        print(gpu_info)
+    gpu_info = subprocess.check_output(["nvidia-smi"], shell=True)
+    print(gpu_info)
 
     INPUT_DIR = Path("./drive/MyDrive/Colab Notebooks/VP/input/")
     from requests import get
@@ -230,6 +227,7 @@ class RNNModel(nn.Module):
             hidden_size=n_hidden,
             batch_first=True,
             bidirectional=True,
+            dropout=0.0
         )
         # self.decoder_out = nn.Linear(n_hidden*2 + 8*2, 1)  # lstm_hidden + id_embedding
         self.decoder_out = nn.Sequential(
@@ -637,7 +635,7 @@ class Config:
         "u_in_sqrt",
         "time_step_diff",
     ]
-    train_folds = [13, 14]
+    train_folds = [0, 1, 2, 3, 4]
     use_aug = False
 
 
@@ -647,11 +645,25 @@ def run():
     train_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/train.csv")
     test_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/test.csv")
     if config.use_aug:
-        train_aug_df = pd.read_csv(INPUT_DIR / "ventilator-pressure-prediction/train_aug.csv")
+        train_aug_df = pd.read_csv(INPUT_DIR / "train_aug.csv")
 
-    pl_test_df = pd.read_csv(INPUT_DIR / "ensemble_0.114/raw_submission.csv")
+    # for pseudo labeling
+    if ENV == "colab":
+        pl_test_df = pd.read_csv(INPUT_DIR / "../ensemble_0.1149/raw_submission.csv")
+    else:
+        pl_test_df = pd.read_csv(INPUT_DIR / "ensemble_0.114/raw_submission.csv")
     pl_test_df = test_df.merge(pl_test_df, on="id", how="left")
     original_train_df = train_df.copy()
+
+    if ENV == "colab":
+        oof_df = pd.read_csv(INPUT_DIR / "../exp106_oof/oof_df.csv")
+    else:
+        oof_df = pd.read_csv("../106_pl_15fold/oof_df.csv")
+    oof_df = train_df[["id", "u_out"]].merge(oof_df, on="id", how="left")
+    oof_df["err"] = np.abs(oof_df["preds"] - oof_df["pressure"])
+    breath_err_mean = oof_df[oof_df["u_out"] == 0].groupby("breath_id")["err"].mean()
+    del oof_df
+    gc.collect()
 
     folds = GroupKFold(n_splits=config.n_cv_fold)
 
@@ -697,8 +709,12 @@ def run():
         trn_breath_ids = original_train_df.iloc[trn_idx]["breath_id"].unique()
         val_breath_ids = original_train_df.iloc[val_idx]["breath_id"].unique()
 
+        remove_breath_ids = breath_err_mean[breath_err_mean >= 1.0].index.values
+
         _train_df = train_df[
             train_df["breath_id"].isin(trn_breath_ids)].reset_index(drop=True)
+        _train_df = _train_df[
+            ~_train_df["breath_id"].isin(remove_breath_ids)].reset_index(drop=True)
         _valid_df = train_df[
             (train_df["breath_id"].isin(val_breath_ids))
             & (train_df["breath_id_ix"] == 0)
