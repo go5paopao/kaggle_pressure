@@ -637,7 +637,7 @@ class Config:
         "u_in_sqrt",
         "time_step_diff",
     ]
-    train_folds = [0]
+    train_folds = [5]
     use_aug = False
 
 
